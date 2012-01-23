@@ -1,6 +1,6 @@
 <?php
 
-require_once 'activitiesSupplementalFunctions.php';
+require_once('activitiesSupplementalFunctions.php');
 
 //input: username
 //output:  all the

@@ -1,7 +1,7 @@
 <?php
 
 
-require_once ('DAO/activityCategoryDocDAO.php');
+require_once('DAO/activityCategoryDocDAO.php');
 
 use urm\urm_secure\DAO\activityCategoryDocDAO;
 

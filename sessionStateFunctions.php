@@ -1,5 +1,5 @@
 <?php 
- require_once 'sessionStateBean.php';
+ require_once('sessionStateBean.php');
  
 	function printSessionState($userId){
 		$userId = cleanStrForDb($userId);

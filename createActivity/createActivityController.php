@@ -1,7 +1,7 @@
 <?php
 	
- require_once( 'urm_secure/validationFunctions.php' );
- require_once( 'urm_secure/activityFunctions.php' );
+ require_once('urm_secure/validationFunctions.php');
+ require_once('urm_secure/activityFunctions.php');
  
  class createActivityController{
  	

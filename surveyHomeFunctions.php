@@ -1,5 +1,5 @@
 <?php 
-require_once 'activitiesSupplementalFunctions.php';
+require_once('activitiesSupplementalFunctions.php');
 
 /*
  * for each facility we see here, we must query all the surveycategories beneath it to see if they are complete or not.

@@ -1,5 +1,5 @@
 <?php 
-require_once 'modProfileFunctions.php';
+require_once('modProfileFunctions.php');
  
 
 function sendPasswordResetEmail($un){
