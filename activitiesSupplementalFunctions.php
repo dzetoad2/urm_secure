@@ -38,6 +38,22 @@ function isActivityCategoryComplete($userId, $facilityId, $activityCategoryId, $
 	return true;
 }
 
+function isActivityCategoryStarted($userId, $facilityId, $activityCategoryId, $isCustomFacility){
+	$result = mysql_query("  select  id from activity where activityCategoryId=".$activityCategoryId);
+	if($result===FALSE){
+		$errorMsg='isActivityCategoryComplete(): got false as query result on activitycategory table, activitycat id is: '.$activityCategoryId;
+		throwMyExc($errorMsg);
+		
+	}
+	while($row = mysql_fetch_array($result)){
+		$aid = $row['id'];
+		if(isActivityAnswered($userId, $facilityId,      $aid,      $isCustomFacility,0)){  //$isCustomActivity = 0
+			return true;
+		}
+	}
+	return false;
+}
+
 /*   This checks if the OTHER categories, in this activitycategory's same group, complete.  It does not check THIS activitycategory for completion.
  *     Group is based on activitycategorydocid.  if same docid -> same group.
  */
@@ -186,9 +202,7 @@ function isSurveyCategoryComplete($userId, $facilityId,$isCustomFacility,   $sur
 	$result = mysql_query("  select  id from activityCategory where surveyCategoryId=".$surveyCategoryId);
 	if($result===FALSE){
 		$errorMsg='error: issurveycategorycomplete got false as query result on activitycategory table, surveycat id is: '.$surveyCategoryId;
-		$_SESSION['errorMsg'] = $errorMsg;
-		header('location: errorPage.php');
-		exit();
+		throwMyExc($errorMsg);
 	}
 	while($row = mysql_fetch_array($result)){  //loop thru the activity category ids.
 		if(!isActivityCategoryComplete($userId, $facilityId, $row['id'], $isCustomFacility, 0)){ //0: normal activities, not custom.
@@ -197,12 +211,27 @@ function isSurveyCategoryComplete($userId, $facilityId,$isCustomFacility,   $sur
 	}
 	if(!isCustomActivitiesComplete($userId,$facilityId, $isCustomFacility,$surveyCategoryId)){
 		//return false;
-		
-	
-	
 	}
 	return true;
-		
+}
+
+function isSurveyCategoryStarted($userId, $facilityId,$isCustomFacility,   $surveyCategoryId   ){
+
+	$result = mysql_query("  select  id from activityCategory where surveyCategoryId=".$surveyCategoryId);
+	if($result===FALSE){
+		$errorMsg='error: issurveycategorystarted got false as query result on activitycategory table, surveycat id is: '.$surveyCategoryId;
+		throwMyExc($errorMsg);
+	}
+	while($row = mysql_fetch_array($result)){  //loop thru the activity category ids.
+		if(isActivityCategoryStarted($userId, $facilityId, $row['id'], $isCustomFacility, 0)){ //0: normal activities, not custom.
+			return true;
+		}
+	}
+	if(!isCustomActivitiesComplete($userId,$facilityId, $isCustomFacility,$surveyCategoryId)){
+		//return false;
+	}
+	return false;
+	
 }
 
 

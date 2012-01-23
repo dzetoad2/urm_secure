@@ -35,10 +35,6 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 		if(isSurveyCategoryComplete($userId,$facilityId, $isCustomFacility, $row['id'])){    // iscustomactivity (1 and 0 both will be checked.    row[id]: surveycategoryid.  
 		  $rowStatus = '<img src="images/b_check.png"/>';
 		  
-		  
-		  
-		  
-		  
 		}else{
  		  $rowStatus = '';//blank
 		}
@@ -63,7 +59,28 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 		    $dropImgSrcStr = '';
 		  }
 		  
+		}elseif($isCustomFacility==1){
+			
+//			if(false == isSurveyCategoryStarted($userId,$facilityId,$isCustomFacility,$row['id']) ){  //if the surv cat is not started yet...
+//  				$dropImgSrcStr = '';  //then its impossible to delete answers, so blank this out.
+//  			}
+			
+  			
+
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+		}else{
+			$em='iscustomfacility is not 1 and not 0, error!';
+			throwMyExc($em);
 		}
+
 		if(defined('DEBUG')){
 		 $o .=  '<tr class="'.$classRow.'" id="'.$row['id'].'"><td class="drop"><img '.$dropImgSrcStr.' /></td><td class="cell1" id="'.$row['id'].'">'
 		      .$row['id'].''.'</td><td class="nameCell" id="'.$row['title'].'"><a class="unclickable" href="" >'.$row['title'].'</a></td><td>'.$rowStatus.'</td><td>'.$surveyCategoryOwner.'</td></tr>';
