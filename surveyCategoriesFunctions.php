@@ -54,16 +54,16 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
   		  }
 		  if($userId != $surveyCategoryOwnerId   && $surveyCategoryOwnerId != '' && !defined('debugSurveyCategories')){ //if this is not owned by 'me'...
 		   //deny access.
-		    $isAllowed=false;
+		    $isAllowed = false;
 		    $classRow = 'grayText';
 		    $dropImgSrcStr = '';
 		  }
 		  
 		}elseif($isCustomFacility==1){
 			
-//			if(false == isSurveyCategoryStarted($userId,$facilityId,$isCustomFacility,$row['id']) ){  //if the surv cat is not started yet...
-//  				$dropImgSrcStr = '';  //then its impossible to delete answers, so blank this out.
-//  			}
+			if(false == isSurveyCategoryStarted($userId,$facilityId,$isCustomFacility,$row['id']) ){  //if the surv cat is not started yet...
+  				$dropImgSrcStr = '';  //then its impossible to delete answers, so blank this out.
+  			}
 			
   			
 
