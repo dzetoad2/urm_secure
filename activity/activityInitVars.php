@@ -1,0 +1,33 @@
+<?php
+	if(!isset($isPerformedAdult)) $isPerformedAdult = "";
+	if(!isset($isPerformedPediatric)) $isPerformedPediatric = "";
+	if(!isset($isPerformedNatal)) $isPerformedNatal = "";
+	if(!isset($hasTimestandardAdult)) $hasTimestandardAdult = "";
+	if(!isset($hasTimestandardPediatric)) $hasTimestandardPediatric = "";
+	if(!isset($hasTimestandardNatal)) $hasTimestandardNatal = "";
+	if(!isset($durationAdult)) $durationAdult = "";
+	if(!isset($durationPediatric)) $durationPediatric = "";
+	if(!isset($durationNatal)) $durationNatal = "";
+	if(!isset($volumeAdult)) $volumeAdult = "";
+	if(!isset($volumePediatric)) $volumePediatric = "";
+	if(!isset($volumeNatal)) $volumeNatal = "";	
+	if(!isset($methodologyAdult)) $methodologyAdult = "";
+	if(!isset($methodologyPediatric)) $methodologyPediatric = "";
+	if(!isset($methodologyNatal)) $methodologyNatal = "";
+	
+	$errorImg = ' <img class="arrowImg" src="images/red_arrow_left.png" alt="missing input here"/> ';
+	$_isPerformedAdultErrorImg='';
+	$_isPerformedPediatricErrorImg='';
+	$_isPerformedNatalErrorImg='';
+	$_hasTimestandardAdultErrorImg='';
+	$_hasTimestandardPediatricErrorImg='';
+	$_hasTimestandardNatalErrorImg='';
+	$_durationAdultErrorImg='';
+	$_durationPediatricErrorImg='';
+	$_durationNatalErrorImg='';
+	$_volumeAdultErrorImg='';
+	$_volumePediatricErrorImg='';
+	$_volumeNatalErrorImg='';
+	$_methodologyAdultErrorImg='';
+	$_methodologyPediatricErrorImg='';
+	$_methodologyNatalErrorImg='';
