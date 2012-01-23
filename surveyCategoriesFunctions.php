@@ -63,18 +63,13 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 			
 			if(false == isSurveyCategoryStarted($userId,$facilityId,$isCustomFacility,$row['id']) ){  //if the surv cat is not started yet...
   				$dropImgSrcStr = '';  //then its impossible to delete answers, so blank this out.
+  				$surveyCategoryOwnerCellStr = '';
+  			}else{
+				if($rowStatus==''){
+  					$rowStatus = 'started';
+				}
   			}
 			
-  			
-
-  			
-  			
-  			
-  			
-  			
-  			
-  			
-  			
   			
 		}else{
 			$em='iscustomfacility is not 1 and not 0, error!';
