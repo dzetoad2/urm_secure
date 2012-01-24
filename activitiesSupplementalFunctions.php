@@ -274,7 +274,7 @@ function hasCustomActivities($userId,  $surveyCategoryId  ){
 
 
 
-//function getCustomActivityRowsHtml uses :  ->    $userId, $facilityId, $isCustomFacility, $isCustomActivity,    $surveyCategoryId
+//function isget Custom Activity Rows Html uses :  ->    $userId, $facilityId, $isCustomFacility, $isCustomActivity,    $surveyCategoryId
 function isCustomActivitiesComplete($userId, $facilityId, $isCustomFacility, $surveyCategoryId){
 	//1. loop thru the defined custom activities for this user.  each one has to be 'isActivityAnswered() == true' to return true, else we return false.
 	//===============================================    

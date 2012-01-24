@@ -3,19 +3,39 @@
 require_once('activitiesSupplementalFunctions.php');
 
 //input: username
-//output:  all the
+//output:  all the survey categories.
 function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 	/*
 	 * select userFacility.id, facility.name from user
 	 join userFacility on user.id = userFacility.userid
 	 join facility on userFacility.facilityId = facility.id
 	 where user.username = 'admin'
+	 
+	 If it's of type freestanding PR - then we should only return that single result.
 	 */
 	$userId = cleanStrForDb($userId);
 	$facilityId = cleanStrForDb($facilityId);
 	$isCustomFacility = cleanStrForDb($isCustomFacility);
 	
-	$result = mysql_query("  select  id, title from surveyCategory ");           //check un/pw against db.
+	
+	
+	
+	
+	$facilityTypeTitleStr = getFacilityTypeStrFromFacilityEntry($userId, $facilityId, $isCustomFacility);
+	
+	if(false === strpos($facilityTypeTitleStr, 'Pulmonary' )){
+		$conditionStr = '';
+		//die('condition NOT met.  fttstr: '.$facilityTypeTitleStr);
+	}else{
+		$conditionStr = 'WHERE  id = 6';
+		//die('condition met');
+	}
+	
+	
+	
+	
+	
+	$result = mysql_query("  select  id, title from surveyCategory ".$conditionStr);           //check un/pw against db.
 	if($result == FALSE){
 		return " ";
 	}
@@ -251,6 +271,92 @@ where surveyCategory.id = ".$surveyCategoryId."
      throwMyExc("getActivitiesinsurveycategory (surv cat ".$surveyCategoryId." ) had error in query.");
   return $r;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* in:   
+ * out:  the facility type id
+ * 
+ */
+function getFacilityTypeStrFromFacilityEntry($userId, $facilityId, $isCustomFacility){
+	if($isCustomFacility==1){
+		// fid = customFacilityId -   table = customFacility      get facilityTypeId
+		$customFacilityId = $facilityId;
+		$q1 = 'select facilityTypeId, title
+				 from customFacility 
+				 join facilityType ON  customFacility.facilityTypeId = facilityType.id
+				 where facilityTypeId = '.$customFacilityId;
+		$r1 = mysql_query($q1);
+		if($r1===false){ 
+			$em='getfacilitytypeidfromfacilityid: query q1 fail';
+			throwMyExc($em);
+		}
+		$row = mysql_fetch_array($r1);
+		$facilityTypeTitleStr = $row['title'];
+		
+		 
+		
+	}elseif($isCustomFacility==0){
+		// fid = userFacilityId        table = userFacility     get  facilityTypeId
+		$userFacilityId = $facilityId;
+		$q2 = 'select facilityTypeId, title 
+				from userFacility 
+		        join facilityType  ON  userFacility.facilityTypeId = facilityType.id
+				where userFacility.id = '.$userFacilityId;
+		$r2 = mysql_query($q2);
+		if($r2===false){
+			$em='getfacilitytypeidfromfacilityid: query q2 fail';
+			throwMyExc($em);
+		}
+		$row = mysql_fetch_array($r2);
+		$facilityTypeTitleStr = $row['title'];
+		
+		
+		
+	}else{
+		$em='getfacilitytypeidfromfacilityid:  iscustomfacil is not 0 and not 1';
+		throwMyExc($em);
+	}
+	
+	
+	if($facilityTypeTitleStr==''){
+			die('getFacilityTypeStrFromFacilityEntry:  facil type str empty! userid: '.$userId.', fid: '.$facilityId.
+			    ', iscf: '.$isCustomFacility);
+	}
+	return $facilityTypeTitleStr;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Only call this for facilities - not valid for customFacilities!
 function getFacilityIdFromUserFacility($userFacilityId){

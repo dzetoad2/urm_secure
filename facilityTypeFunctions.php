@@ -16,21 +16,8 @@ function getFacilityTypeTitleFromUsername($un){
 	return $row['title'];
 
 }
-function getFacilityTypeIdFromUsername($un){
-	$un = cleanStrForDb($un);
-	$result = mysql_query("SELECT facilityTypeId FROM user WHERE username='$un'");           //check un/pw against db.
-	if($result===false){
-		$em='getFacilityTypeIdFromUsername:query fail';
-		throwMyExc($em);
-	}
-	$numrows = mysql_num_rows($result);
-	if ($numrows != 1){
-		$errorMsg='getFacilityTypeIdFromUsername(): numrows not = 1';
-		throwMyExc($errorMsg);
-	}
-	$row = mysql_fetch_assoc($result);   //associative. this is first row of the result.
-	return $row['facilityTypeId'];
-}
+
+
 
 /*
  * get the facility type rows, but do restrictions if the beds are > 25...
@@ -102,26 +89,7 @@ function getFacilityTypeRowsHtml($fid, $is_cf){
 	return $o;
 }
 
-/*
- * this is not implemented yet - on hold.
- */
-//function getFacilityTypeOptionList(){
-//	$result = mysql_query("SELECT * FROM facilityType");           //check un/pw against db.
-//	if($result === FALSE){
-//		throwMyExc('Error: getfacilitytypeoptionlist: query result was false');
-//	}
-//	$numrows = mysql_num_rows($result);
-//	if ($numrows == 0){
-//		throwMyExc('Error: getfacilitytypeoptionlist: numrows of facilitytype table was 0');
-//	}
-//	$o = '';
-//	while($row = mysql_fetch_array($result))
-//	{
-//	     //$o .=   .$row['id'].'"><td class="nameCell" id="'.$row['title'].'">'.$row['title'].'</td><td>'.$row['description'].'</td></tr>';
-//	}
-//	return $o;
-//	
-//}
+
 
 
 function setUserFacilityType($userId,$userFacilityId,$facilityTypeId){
@@ -150,3 +118,50 @@ function setCustomFacilityType($userId,$customFacilityId,$facilityTypeId){
 	$c = mysql_affected_rows();	
 	return TRUE;
 }
+
+
+
+
+/*
+ * this is not implemented yet - on hold.
+ */
+//function getFacilityTypeOptionList(){
+//	$result = mysql_query("SELECT * FROM facilityType");           //check un/pw against db.
+//	if($result === FALSE){
+//		throwMyExc('Error: getfacilitytypeoptionlist: query result was false');
+//	}
+//	$numrows = mysql_num_rows($result);
+//	if ($numrows == 0){
+//		throwMyExc('Error: getfacilitytypeoptionlist: numrows of facilitytype table was 0');
+//	}
+//	$o = '';
+//	while($row = mysql_fetch_array($result))
+//	{
+//	     //$o .=   .$row['id'].'"><td class="nameCell" id="'.$row['title'].'">'.$row['title'].'</td><td>'.$row['description'].'</td></tr>';
+//	}
+//	return $o;
+//	
+//}
+
+
+
+
+
+/*
+ * Not used at all!   user table has no facil typeid
+ */
+//function getFacilityTypeIdFromUsername($un){
+//	$un = cleanStrForDb($un);
+//	$result = mysql_query("SELECT facilityTypeId FROM user WHERE username='$un'");
+//	if($result===false){
+//		$em='getFacilityTypeIdFromUsername:query fail';
+//		throwMyExc($em);
+//	}
+//	$numrows = mysql_num_rows($result);
+//	if ($numrows != 1){
+//		$errorMsg='getFacilityTypeIdFromUsername(): numrows not = 1';
+//		throwMyExc($errorMsg);
+//	}
+//	$row = mysql_fetch_assoc($result);   //associative. this is first row of the result.
+//	return $row['facilityTypeId'];
+//}

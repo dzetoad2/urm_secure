@@ -208,7 +208,7 @@ function getCustomActivityRowsHtml($userId, $facilityId, $isCustomFacility, $isC
 		if(defined('DEBUG')){
 		 $o .=  '<tr class="customActivityRow clickable" id="'.$row['id'].'""><td><img class="edit" src="images/b_edit.png"/></td><td><img class="drop" src="images/b_drop.png"/></td><td class="cell1" id="'.$row['id'].'">'.$row['id'].''.'</td><td class="nameCell" id="'.$row['title'].'">'.$row['title'].'</td><td>'.$rowStatus .'</td></tr>';
 		}else{
-		 $o .=  '<tr class="customActivityRow clickable" id="'.$row['id'].'""><td><img class="edit" src="images/b_edit.png"/></td><td><img class="drop" src="images/b_drop.png"/></td><td class="nameCell" id="'.$row['title'].'">'.$row['title'].'</td><td>'.$rowStatus .'</td></tr>';
+		 $o .=  '<tr class="customActivityRow clickable" id="'.$row['id'].'""><td><img class="edit" src="images/b_edit.png"/></td><td><img class="drop" src="images/b_drop.png"/></td><td class="nameCell clickable" id="'.$row['title'].'">'.$row['title'].'</td><td>'.$rowStatus .'</td></tr>';
 		}
 		
 		
