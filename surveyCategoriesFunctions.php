@@ -18,9 +18,6 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 	$isCustomFacility = cleanStrForDb($isCustomFacility);
 	
 	
-	
-	
-	
 	$facilityTypeTitleStr = getFacilityTypeStrFromFacilityEntry($userId, $facilityId, $isCustomFacility);
 	
 	if(false === strpos($facilityTypeTitleStr, 'Pulmonary' )){
@@ -30,8 +27,6 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 		$conditionStr = 'WHERE  id = 6';
 		//die('condition met');
 	}
-	
-	
 	
 	
 	
@@ -297,7 +292,7 @@ function getFacilityTypeStrFromFacilityEntry($userId, $facilityId, $isCustomFaci
 		$q1 = 'select facilityTypeId, title
 				 from customFacility 
 				 join facilityType ON  customFacility.facilityTypeId = facilityType.id
-				 where facilityTypeId = '.$customFacilityId;
+				 where customFacility.id = '.$customFacilityId;
 		$r1 = mysql_query($q1);
 		if($r1===false){ 
 			$em='getfacilitytypeidfromfacilityid: query q1 fail';
@@ -332,8 +327,10 @@ function getFacilityTypeStrFromFacilityEntry($userId, $facilityId, $isCustomFaci
 	
 	
 	if($facilityTypeTitleStr==''){
-			die('getFacilityTypeStrFromFacilityEntry:  facil type str empty! userid: '.$userId.', fid: '.$facilityId.
-			    ', iscf: '.$isCustomFacility);
+			$em = 'getFacilityTypeStrFromFacilityEntry:  facil type str empty! userid: '.$userId.', fid: '.$facilityId.
+			    ', iscf: '.$isCustomFacility;
+			throwMyExc($em);
+			
 	}
 	return $facilityTypeTitleStr;
 }
