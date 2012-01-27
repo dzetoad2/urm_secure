@@ -5,7 +5,7 @@ function updatePasswordForUserAccount($userId,$pw){       //username
 	$pw = cleanStrForDb($pw);
 	
 	  $pwhash = constant("SALT") . sha1($pw. constant("SALT"));
-      $result = mysql_query("update user   set pwhash='".$pwhash."' where id=".$userId."  "  );           //check un/pw against db.
+      $result = mysql_queryCustom("update user   set pwhash='".$pwhash."' where id=".$userId."  "  );           //check un/pw against db.
       if($result===false){
       	//return FALSE;
       	throwMyExc('updatePasswordForUserAccount: query fail');
@@ -24,7 +24,7 @@ function updatePasswordForUserAccount_Username($un,$pw){       //username
 	
 	  //echo "DEBUG --    un: ".$un.",  pw: ".$pw.",  pwhash: ".$pwhash."<br/>";
 	
-      $result = mysql_query("update user   set pwhash='".$pwhash."' where username='".$un."' limit 1  "  );           //check un/pw against db.
+      $result = mysql_queryCustom("update user   set pwhash='".$pwhash."' where username='".$un."' limit 1  "  );           //check un/pw against db.
       // update user   set pwhash='#@2xf505907640ec7425d36cb66637d8a5080ad61bae65' where username='testemailaddress@bla.com' limit 1  
       
       
@@ -41,7 +41,7 @@ function updateUserProfile($un,$fn,$ln,$phone){
 	$ln = cleanStrForDb($ln);
 	$phone = cleanStrForDb($phone);	    
 
-	if(false===mysql_query("update  user  set firstname = '".$fn."', lastname= '".$ln."', phone= '".$phone."' where username='$un'  ")){  //try to update the facility id num in the user row. if fail, return false.
+	if(false===mysql_queryCustom("update  user  set firstname = '".$fn."', lastname= '".$ln."', phone= '".$phone."' where username='$un'  ")){  //try to update the facility id num in the user row. if fail, return false.
 		//return FALSE;
 		throwMyExc('updateUserProfile: query fail');
 	}
@@ -58,7 +58,7 @@ function getParam($un,$p){
 	if(!isset($p)){
 		return "p was not set!";
 	}
-	$result = mysql_query("select ".$p ." from user where user.username = '".$un."'");          //resoruce on success, false on error.
+	$result = mysql_queryCustom("select ".$p ." from user where user.username = '".$un."'");          //resoruce on success, false on error.
 	if($result===false){
 		$em="getParam: bad result";
 		throwMyExc($em);

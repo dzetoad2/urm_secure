@@ -11,7 +11,7 @@ function getActivityData($activityId){
 	$o['id'] = $id;
 	$o['title'] = $title;
 	$o['descr'] = $descr;
-	$result = mysql_query("  select  id,title, description, isForAdult, isForPediatric, isForNatal from activity where id = ".$activityId.";");           //check un/pw against db.
+	$result = mysql_queryCustom("  select  id,title, description, isForAdult, isForPediatric, isForNatal from activity where id = ".$activityId.";");           //check un/pw against db.
 	if($result === FALSE){
 		throwMyExc(' getActivityData(): query failed');
 	}
@@ -67,7 +67,7 @@ function getCustomActivityData($userId, $customActivityId){
 	$o['id'] = $id;
 	$o['title'] = $title;
 	$o['descr'] = $descr;
-	$result = mysql_query("select id,title, description from customActivity where userid=".$userId." and id = ".$customActivityId.";");           //check un/pw against db.
+	$result = mysql_queryCustom("select id,title, description from customActivity where userid=".$userId." and id = ".$customActivityId.";");           //check un/pw against db.
 	if($result === FALSE){
 		$errorMsg='getCustomActivityData() query failed';
 		throwMyExc($errorMsg);
@@ -98,8 +98,9 @@ function getCustomActivityData($userId, $customActivityId){
 
 function getActivityCategoryIdFromActivityId($activityId){
 	// check the activity table
+	$activityId = cleanStrForDb($activityId);
 	$q = 'select activityCategoryId from activity where id = '.$activityId;
-	$r = mysql_query($q);
+	$r = mysql_queryCustom($q);
 	if($r===false){
 		$em='getactivitycategoryidfromactivityid - query fail, q: '.$q;
 		throwMyExc($em);
@@ -150,7 +151,13 @@ function submitSurveyAnswer($userId, $_fid,$_aid,$_is_cf,$_is_ca,$_isPerformedAd
 		
 }
 function surveyAnswerPresent($userId, $fid,$aid,$is_cf,$is_ca){
-	$result = mysql_query("select  durationAdult from surveyAnswer where userId=".$userId."  and  facilityId = ".$fid."
+	$userId = cleanStrForDb($userId);
+	$fid = cleanStrForDb($fid);
+	$aid = cleanStrForDb($aid);
+	$is_cf = cleanStrForDb($is_cf);
+	$is_ca = cleanStrForDb($is_ca);
+	
+	$result = mysql_queryCustom("select  durationAdult from surveyAnswer where userId=".$userId."  and  facilityId = ".$fid."
                    and activityId=".$aid." and isCustomFacility=".$is_cf." and isCustomActivity=".$is_ca."  ");           //check un/pw against db.
 	if($result === FALSE){
 		throwMyExc('surveyanswerpresent(): select from surveyanswer table - query failed, userId:'.$userId.', fid:'.$fid.', aid:'.$aid.',is_cf:'.$is_cf.', is_ca:'.$is_ca);
@@ -176,12 +183,15 @@ function surveyAnswerPresent($userId, $fid,$aid,$is_cf,$is_ca){
 					hasTimestandardAdult, hasTimestandardPediatric,hasTimestandardNatal, 
 					durationAdult, durationPediatric, durationNatal,volumeAdult,volumePediatric,volumeNatal,methodologyAdult,methodologyPediatric,methodologyNatal)     
 	               values (1,32,2,0,0,'na','na','na',  'na','na','na',1,1,1,3,3,3,'na','na','na')
+ 
+ *  INPUTS ALREADY CLEAN FROM ABOVE CALLER.
+ *  
  */
 function insertSurveyAnswer($userId, $_fid,$_aid,$_is_cf,$_is_ca,$_isPerformedAdult,$_isPerformedPediatric,$_isPerformedNatal,
  					 $_hasTimestandardAdult,$_hasTimestandardPediatric,$_hasTimestandardNatal,$_durationAdult,$_durationPediatric,
  					 		 $_durationNatal,$_volumeAdult,$_volumePediatric,$_volumeNatal,$_methodologyAdult,$_methodologyPediatric,$_methodologyNatal){
 	//try to insert a survey answer in surveyAnswer table. fail : false.    
-	$res = mysql_query("insert  into surveyAnswer   (userid, facilityid, activityId, isCustomFacility,
+	$res = mysql_queryCustom("insert  into surveyAnswer   (userid, facilityid, activityId, isCustomFacility,
 					isCustomActivity, isPerformedAdult, isPerformedPediatric, isPerformedNatal, 
 					hasTimestandardAdult, hasTimestandardPediatric,hasTimestandardNatal, 
 					durationAdult, durationPediatric, durationNatal,volumeAdult,volumePediatric,volumeNatal,methodologyAdult,methodologyPediatric,methodologyNatal)     
@@ -211,17 +221,19 @@ function insertSurveyAnswer($userId, $_fid,$_aid,$_is_cf,$_is_ca,$_isPerformedAd
 		throwMyExc('insertsurveyanswer():  num affected rows was neither 0 nor 1, db corruption');
 	}
 	//succeeded!
- 	//	if(!mysql_query("insert  into surveyAnswer   (userid, facilityid, activityId, isCustomFacility,
+ 	//	if(!mysql_queryCustom("insert  into surveyAnswer   (userid, facilityid, activityId, isCustomFacility,
 //					isCustomActivity, durationAdult, durationPediatric, durationNatal,volume,status)     
 //	               values ( 1, 32, 2,0,0,1,2, 3,789,'unknown-doofus')")){
 //	 return "failed super test! bad";
 //	               }
 }
-
+/*
+ * INPUTS ALREADY CLEAN FROM CALLER. 
+ */
 function updateSurveyAnswer($userId, $_fid,$_aid,$_is_cf,$_is_ca,$_isPerformedAdult,$_isPerformedPediatric,$_isPerformedNatal,
  					 $_hasTimestandardAdult,$_hasTimestandardPediatric,$_hasTimestandardNatal,$_durationAdult,$_durationPediatric,
  					 		 $_durationNatal,$_volumeAdult,$_volumePediatric,$_volumeNatal,$_methodologyAdult,$_methodologyPediatric,$_methodologyNatal){
-	$res = mysql_query("update    surveyAnswer    set 
+	$res = mysql_queryCustom("update    surveyAnswer    set 
 		isPerformedAdult='".$_isPerformedAdult."',
 		isPerformedPediatric='".$_isPerformedPediatric."',
 		isPerformedNatal='".$_isPerformedNatal."',
@@ -260,7 +272,7 @@ function getDurationAdult($userId, $fid,$aid,$is_cf,$is_ca){
 	$aid = cleanStrForDb($aid);
 	$is_cf = cleanStrForDb($is_cf);
 	$is_ca = cleanStrForDb($is_ca);
-	$result = mysql_query("  select  durationAdult from surveyAnswer where userid=".$userId."  and  facilityId = ".$fid."
+	$result = mysql_queryCustom("  select  durationAdult from surveyAnswer where userid=".$userId."  and  facilityId = ".$fid."
                    and activityId=".$aid." and isCustomFacility=".$is_cf." and isCustomActivity=".$is_ca."  ");           //check un/pw against db.
 	if($result === FALSE){
 		throwMyExc('getDurationadult(): query failed');
@@ -288,7 +300,7 @@ function getDurationPediatric($userId, $fid,$aid,$is_cf,$is_ca){
 	$aid = cleanStrForDb($aid);
 	$is_cf = cleanStrForDb($is_cf);
 	$is_ca = cleanStrForDb($is_ca);
-	$result = mysql_query("  select  durationPediatric from surveyAnswer where userid=".$userId."  and  facilityId = ".$fid."
+	$result = mysql_queryCustom("  select  durationPediatric from surveyAnswer where userid=".$userId."  and  facilityId = ".$fid."
                    and activityId=".$aid." and isCustomFacility=".$is_cf." and isCustomActivity=".$is_ca."  ");           //check un/pw against db.
 	if($result == FALSE){
 		throwMyExc('getDurationPediatric(): query failed');
@@ -317,7 +329,7 @@ function getDurationNatal($userId, $fid,$aid,$is_cf,$is_ca){
 	$is_cf = cleanStrForDb($is_cf);
 	$is_ca = cleanStrForDb($is_ca);
 		
-	$result = mysql_query("  select  durationNatal from surveyAnswer where userid=".$userId."  and  facilityId = ".$fid."
+	$result = mysql_queryCustom("  select  durationNatal from surveyAnswer where userid=".$userId."  and  facilityId = ".$fid."
                    and activityId=".$aid." and isCustomFacility=".$is_cf." and isCustomActivity=".$is_ca."  ");           //check un/pw against db.
 	if($result === FALSE){
 		throwMyExc('getdurationnatal(): query failed');
@@ -347,7 +359,7 @@ function getVolume($userId, $fid,$aid,$is_cf,$is_ca){
 	$is_cf = cleanStrForDb($is_cf);
 	$is_ca = cleanStrForDb($is_ca);
 
-	$result = mysql_query("  select  volume from surveyAnswer where userid=".$userId."  and  facilityId = ".$fid."
+	$result = mysql_queryCustom("  select  volume from surveyAnswer where userid=".$userId."  and  facilityId = ".$fid."
                    and activityId=".$aid." and isCustomFacility=".$is_cf." and isCustomActivity=".$is_ca."  ");           //check un/pw against db.
 	if($result === FALSE){
 		throwMyExc('getvolume(): query failed');
@@ -377,7 +389,7 @@ function getSurveyAnswerRow($userId, $fid,$aid,$is_cf,$is_ca){
 	$is_cf = cleanStrForDb($is_cf);
 	$is_ca = cleanStrForDb($is_ca);
 	
-	$result = mysql_query("select * from surveyAnswer where userid=".$userId."  and  facilityId = ".$fid."
+	$result = mysql_queryCustom("select * from surveyAnswer where userid=".$userId."  and  facilityId = ".$fid."
                    and activityId=".$aid." and isCustomFacility=".$is_cf." and isCustomActivity=".$is_ca);           //check un/pw against db.
 	if($result === FALSE){
 		throwMyExc('getsurveyanswerrow(): query failed');

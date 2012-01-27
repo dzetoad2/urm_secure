@@ -28,8 +28,9 @@ function updateUserFacility($userId,$userFacilityId,
 	$neoNatalIntensiveCareBeds = cleanStrForDb($neoNatalIntensiveCareBeds);
 	$otherIntensiveCareBeds = cleanStrForDb($otherIntensiveCareBeds);
 	$pediatricIntensiveCareBeds = cleanStrForDb($pediatricIntensiveCareBeds);
+	$ftiStr = cleanStrForDb($ftiStr);
 	
-	$r = mysql_query('
+	$r = mysql_queryCustom('
 	 update userFacility
 	 set '.$ftiStr.'  isMoreThan26TLB="'.$isMoreThan26TLB.'", isCriticalAccessHospital="'. $isCriticalAccessHospital.'", 
          totalFacilityBeds='.$totalFacilityBeds.', medicalSurgicalIntensiveCareBeds='.$medicalSurgicalIntensiveCareBeds.', 
@@ -64,7 +65,9 @@ function getUserFacilityRowHtml($ufBean){
  
 
 function getUserFacilityFullBean($userFacilityId){
-    $r = mysql_query('
+	$userFacilityId = cleanStrForDb($userFacilityId);
+	
+    $r = mysql_queryCustom('
 	  select userFacility.userId, userFacility.facilityId, userFacility.isMoreThan26TLB, userFacility.isCriticalAccessHospital,
 	   userFacility.totalFacilityBeds, userFacility.medicalSurgicalIntensiveCareBeds, userFacility.neoNatalIntensiveCareBeds,
 	   userFacility.otherIntensiveCareBeds, userFacility.pediatricIntensiveCareBeds, 
@@ -115,8 +118,8 @@ function getUserFacilityFullBean($userFacilityId){
 
 
 function getIsCriticalAccessHospitalForUserFacility($userFacilityId){
-	$id = $userFacilityId;
-	$res = mysql_query('select isCriticalAccessHospital from userFacility where id='.$userFacilityId);
+	$userFacilityId = cleanStrForDb($userFacilityId);
+	$res = mysql_queryCustom('select isCriticalAccessHospital from userFacility where id='.$userFacilityId);
 	if($res===false){
 		throwMyExc('getIsCriticalAccessHospitalForUserFacility(): query fail, mysqlerror is: '.mysql_error());
 	}

@@ -6,7 +6,7 @@ function  updateCustomActivity($title,$descr,$customActivityId)
 	$customActivityId = cleanStrForDb($customActivityId);
 	
 	//insert into db.
-	 $res=mysql_query("update   customActivity  set title='".$title."', description='".$descr."'
+	 $res=mysql_queryCustom("update   customActivity  set title='".$title."', description='".$descr."'
 	                 where id = ".$customActivityId." ");
 	 if($res===false){
 	 	$em='updateCustomActivity: query failed';
@@ -28,7 +28,7 @@ function updateActivity($title,$descr,$activityId)
 	$activityId = cleanStrForDb($activityId);
 	
 	//insert into db.
-	 $res=mysql_query("update   activity  set title='".$title."', description='".$descr."'
+	 $res=mysql_queryCustom("update   activity  set title='".$title."', description='".$descr."'
 	                 where id = ".$activityId." ");
 	 if($res===false){
 	 	$em='updateActivity: query failed';

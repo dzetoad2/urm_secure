@@ -15,7 +15,8 @@ function getBreadCrumbCF($userFacilityId){    //customfacility  only
 }
 
 function getActivityCategoryName($activityCategoryId){
-	$result = mysql_query("  SELECT title FROM activityCategory    
+	$activityCategoryId = cleanStrForDb($activityCategoryId);
+	$result = mysql_queryCustom("  SELECT title FROM activityCategory    
 	              WHERE  id = ".$activityCategoryId." ");           //check un/pw against db.
 	if($result === FALSE){
 		$em= 'getActivityCategoryName(): result was false -  getSurveyCategoryName';
@@ -39,7 +40,8 @@ function getActivityCategoryName($activityCategoryId){
  * get a single doc title.
  */
 function getActivityCategoryDocDAO($activityCategoryDocId){
-	$r = mysql_query("select * from activityCategoryDoc where id = ".$activityCategoryDocId);
+	$activityCategoryDocId = cleanStrForDb($activityCategoryDocId);
+	$r = mysql_queryCustom("select * from activityCategoryDoc where id = ".$activityCategoryDocId);
 	if($r===false){
 		$em='getactivitycategorydoctitle: q1 failed, id was: '.$activityCategoryId;
 		throwMyExc($em);
@@ -56,7 +58,8 @@ function getActivityCategoryDocDAO($activityCategoryDocId){
 }
 
 function getActivityCategoryDoc($activityCategoryId){
-	$result = mysql_query("  SELECT doc FROM activityCategory left join activityCategoryDoc 
+	$activityCategoryId = cleanStrForDb($activityCategoryId);
+	$result = mysql_queryCustom("  SELECT doc FROM activityCategory left join activityCategoryDoc 
 	                      on activityCategory.activityCategoryDocId = activityCategoryDoc.id
 	                      where activityCategory.id = ".$activityCategoryId.";");
 	if($result === FALSE){
@@ -82,7 +85,8 @@ function getActivityCategoryDoc($activityCategoryId){
 }
 
 function getSurveyCategoryName($surveyCategoryId){
-	$result = mysql_query("  SELECT title FROM surveyCategory    
+	$surveyCategoryId = cleanStrForDb($surveyCategoryId);
+	$result = mysql_queryCustom("  SELECT title FROM surveyCategory    
 	              WHERE  id = ".$surveyCategoryId." ");           //check un/pw against db.
 	if($result === FALSE){
 		$em= "getSurveyCategoryName: result was false -  getSurveyCategoryName";
@@ -106,7 +110,8 @@ function getSurveyCategoryName($surveyCategoryId){
 }
 
 function getSurveyCategoryDoc($surveyCategoryId){
-	$result = mysql_query("  SELECT doc FROM surveyCategory    
+	$surveyCategoryId = cleanStrForDb($surveyCategoryId);
+	$result = mysql_queryCustom("  SELECT doc FROM surveyCategory    
 	              WHERE  id = ".$surveyCategoryId." ");           //check un/pw against db.
 	if($result === FALSE){
 		$em= "getSurveyCategoryDoc: result was false -  getSurveyCategoryName";
@@ -129,7 +134,8 @@ function getSurveyCategoryDoc($surveyCategoryId){
 	return cleanDocString($row['doc']);   //   base64_decode is an option 
 }
 function getSurveyCategoryDoc2($surveyCategoryId){
-	$result = mysql_query(" SELECT doc2 FROM surveyCategory    
+	$surveyCategoryId = cleanStrForDb($surveyCategoryId);
+	$result = mysql_queryCustom(" SELECT doc2 FROM surveyCategory    
 	              WHERE  id = ".$surveyCategoryId." ");           //check un/pw against db.
 	if($result === FALSE){
 		$em= "getSurveyCategoryDoc2: result was false -  getSurveyCategoryName";
@@ -159,7 +165,8 @@ function getSurveyCategoryDoc2($surveyCategoryId){
 //WHERE userFacility.id =32
 
 function getFacilityName($userFacilityId){  //userfacilityid, so its a facility, not a customFacility.
-	$result = mysql_query("  SELECT name FROM facility left join userFacility on userFacility.facilityId = facility.id 
+	$userFacilityId = cleanStrForDb($userFacilityId);
+	$result = mysql_queryCustom("  SELECT name FROM facility left join userFacility on userFacility.facilityId = facility.id 
 	              WHERE userFacility.id = ".$userFacilityId." ");           //check un/pw against db.
 	if($result === FALSE){
 		$em= "getFacilityName: result was false -  getfacilityname";
@@ -184,7 +191,8 @@ function getFacilityName($userFacilityId){  //userfacilityid, so its a facility,
 }
 
 function getCustomFacilityName($customFacilityId){
-	$result = mysql_query("  SELECT name FROM customFacility    
+	$customFacilityId = cleanStrForDb($customFacilityId);
+	$result = mysql_queryCustom("  SELECT name FROM customFacility    
 	              WHERE customFacility.id = ".$customFacilityId." ");           //check un/pw against db.
 	if($result === FALSE){
 		$em = "getCustomFacilityName(): result was false";

@@ -56,7 +56,7 @@ function loggedin(){
     	$username = cleanStrForDb($username);
     	$userId = cleanStrForDb($userId);
     	
-      $result = mysql_query("SELECT * FROM user WHERE username='$username' and id=$userId");           //check un/pw against db.
+      $result = mysql_queryCustom("SELECT * FROM user WHERE username='$username' and id=$userId");           //check un/pw against db.
       if($result===false){
       	$em='loggedin: query fail';
       	throwMyExc($em);
@@ -200,6 +200,13 @@ function cleanStrForDb($s){
 	return mysql_real_escape_string($s);
 }
 
+
+/*
+ * can tweak things if necessary.
+ */
+function mysql_queryCustom($q){
+	return mysql_query($q);
+}
 
 function convert_smart_quotes($s){
 

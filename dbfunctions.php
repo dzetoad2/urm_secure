@@ -9,7 +9,7 @@
 //checks if user is in db.  returns TRUE if so, else FALSE.
 function userInDb($un){       //username
 	  $un = cleanStrForDb($un);
-      $result = mysql_query("SELECT * FROM user WHERE username='$un'");           //check un/pw against db.
+      $result = mysql_queryCustom("SELECT * FROM user WHERE username='$un'");           //check un/pw against db.
       if($result===false){
 		  throwMyExc('userInDb(): query fail');
 	  }
@@ -27,9 +27,9 @@ function createNewUserAccount($un,$pw){       //username
 	$pwhash = constant("SALT") . sha1($pw. constant("SALT"));
 	$authtoken = createAuthToken($un);
 	  // insert into user    values (NULL, 'admin4','123','456',NULL)             works !!!
-	  //mysql_query("INSERT INTO Persons (FirstName, LastName, Age)
+	  //mysql _queryCustom("INSERT INTO Persons (FirstName, LastName, Age)
       //VALUES ('Peter', 'Griffin', '35')");
-    $result = mysql_query("insert into user (username, pwhash, authtoken, firstname, lastname, phone) values ('".$un."','".$pwhash."','".$authtoken."', ' ', ' ', ' ')    "  );           //check un/pw against db.
+    $result = mysql_queryCustom("insert into user (username, pwhash, authtoken, firstname, lastname, phone) values ('".$un."','".$pwhash."','".$authtoken."', ' ', ' ', ' ')    "  );           //check un/pw against db.
       //insert : true on success, false on error.
     if($result===false){
     	$em='query false';
@@ -45,7 +45,7 @@ function updateTimestamp($un){
 	  
 	$un = cleanStrForDb($un);
 
-      if(FALSE === mysql_query("update  user  set timestamp = NULL  where username='$un'  ")){           //check un/pw against db.
+      if(FALSE === mysql_queryCustom("update  user  set timestamp = NULL  where username='$un'  ")){           //check un/pw against db.
 		$errorMsg="UpdateTimestamp(): query failed!";
 		throwMyExc($errorMsg);
       }
@@ -54,7 +54,7 @@ function getExpiryDate($un){
   //according to 'EXPIRY_INTERVAL' constant, determine when user login auth expires.
 	$un = cleanStrForDb($un);
 
-  $results = mysql_query("select * from user  where username='$un' "); 
+  $results = mysql_queryCustom("select * from user  where username='$un' "); 
   if($results === FALSE){           //check un/pw against db.
 		$errorMsg="getExpiryDate: query failed";
 		throwMyExc($errorMsg); 

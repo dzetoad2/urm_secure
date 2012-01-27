@@ -10,7 +10,7 @@ function getMyFacilitiesRowsHtml($userId){
 	 */
 	$userId = cleanStrForDb($userId);
 	
-	$result = mysql_query("select userFacility.id AS id, facility.name, facility.address, facility.city, facility.state, facility.zip, facilityType.id AS facilityTypeId, facilityType.title from user
+	$result = mysql_queryCustom("select userFacility.id AS id, facility.name, facility.address, facility.city, facility.state, facility.zip, facilityType.id AS facilityTypeId, facilityType.title from user
 join userFacility on user.id = userFacility.userid
 left join facilityType on facilityType.id = userFacility.facilityTypeId
 join facility on userFacility.facilityId = facility.id
@@ -58,11 +58,11 @@ function clearFacilities($userId){
 //  1.    know these are normal facil, not custom.
 //  2. delete from surveyAnswer all answers corresponding to this userid and that are normal facilities.
 	$userId = cleanStrForDb($userId);
-	$result = mysql_query("delete from userFacility where userId = $userId");
+	$result = mysql_queryCustom("delete from userFacility where userId = $userId");
 	if($result===false)
       throwMyExc("clearFacilities: Error in delete query from userFacility");
 	$n = mysql_affected_rows();
-	$r2 = mysql_query("delete from surveyAnswer where userId = ".$userId." and isCustomFacility = 0");
+	$r2 = mysql_queryCustom("delete from surveyAnswer where userId = ".$userId." and isCustomFacility = 0");
     if($r2===false){
 	  throwMyExc("clearFacilities: Error in (cascade) delete from surveyAnswer (cuz userFacility successfully deleted all facilities for this user)");
 	}
@@ -73,11 +73,11 @@ function clearCustomFacilities($userId){
 //  1. get list of customfacility id.  know these are custom facil, not normal.
 //  2. delete from surveyAnswer all answers corresponding to this customfacilityid and userid.
 	$userId = cleanStrForDb($userId);
-	$result = mysql_query("delete from customFacility where userid = $userId");
+	$result = mysql_queryCustom("delete from customFacility where userid = $userId");
 	if($result===false) 
-	  throwMyExc("clearCustomFacilities: mysql_query delete error");
+	  throwMyExc("clearCustomFacilities: query  delete error");
 	$n = mysql_affected_rows();
-	$r2 = mysql_query("delete from surveyAnswer where userId = ".$userId." and isCustomFacility = 1");
+	$r2 = mysql_queryCustom("delete from surveyAnswer where userId = ".$userId." and isCustomFacility = 1");
     if($r2===false){
 	  throwMyExc("clearCustomFacilities: Error in (cascade) delete from surveyAnswer (cuz userFacility successfully deleted all facilities for this user)");
 	}    

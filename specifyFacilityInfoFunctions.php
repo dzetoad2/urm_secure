@@ -66,7 +66,7 @@ $pediatricIntensiveCareBeds){  //according to the user, set the facilityId.
 //
 //	//write to db.
 //	  //taken out 'serviceCode, '
-//	 mysql_query("INSERT INTO customFacility (userid, facilityTypeId,name, address,city,state,zip,
+//	 mysql_           queryCustom("INSERT INTO customFacility (userid, facilityTypeId,name, address,city,state,zip,
 //		     phone,isMoreThan26TLB,isCriticalAccessHospital, totalFacilityBeds,
 //		     medicalSurgicalIntensiveCareBeds, neoNatalIntensiveCareBeds, otherIntensiveCareBeds,
 //		     pediatricIntensiveCareBeds)

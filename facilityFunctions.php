@@ -4,7 +4,7 @@ require_once('urm_secure/userFacilityBean.php');
 function getFacilityRowsHtml($zip,$typeAbbrev){
 	$zip = cleanStrForDb($zip);
 	$typeAbbrev = cleanStrForDb($typeAbbrev);
- 	  $result = mysql_query('
+ 	  $result = mysql_queryCustom('
  	  		SELECT facility.id, zip, name, address, city, state, facilityTypeAbbrev     
  	  		FROM facility 
  	  		WHERE zip REGEXP "'.$zip.'"  AND   facilityTypeAbbrev = "'.$typeAbbrev.'"  ');
@@ -38,7 +38,7 @@ function hasUserFacilityEntry($userId,$facilityId){
 	$facilityId = cleanStrForDb($facilityId);
 
 	//check if this 'userid-facilityid' entry exists in the table yet.
-	$result = mysql_query("select * from userFacility where userId=".$userId." and facilityid=".$facilityId." ");
+	$result = mysql_queryCustom("select * from userFacility where userId=".$userId." and facilityid=".$facilityId." ");
 	if($result===false){
 		throwMyExc("hasUserFacilityEntry(): Fail in db select , result of query was false");
 	}
@@ -84,7 +84,7 @@ $pediatricIntensiveCareBeds){
 	      ".$facilityTypeId.",'".$isMoreThan26TLB."','".$isCriticalAccessHospital."',".$totalFacilityBeds.",".
 	      $medicalSurgicalIntensiveCareBeds.",".$neoNatalIntensiveCareBeds.",".$otherIntensiveCareBeds.",".$pediatricIntensiveCareBeds.")";
 	      
-	if(false===mysql_query($queryText)){  //try to update the facility id num in the user row. if fail, return false.
+	if(false===mysql_queryCustom($queryText)){  //try to update the facility id num in the user row. if fail, return false.
 		throwMyExc('insertUserFacilityEntry: Error inserting into userFacility table:'.$queryText.', mysqlerror: '.mysql_error()); 
 	
 	}	
@@ -96,7 +96,7 @@ $pediatricIntensiveCareBeds){
 
 function isValidFacilityId($id){
  	$id = cleanStrForDb($id);
- 	 $result = mysql_query("SELECT * FROM facility WHERE id='$id'");           //check un/pw against db.
+ 	 $result = mysql_queryCustom("SELECT * FROM facility WHERE id='$id'");           //check un/pw against db.
 	 if($result===false){
 	 	$em='isValidFacilityId: query fail';
 	 	throwMyExc($em);
@@ -113,7 +113,7 @@ function isValidFacilityId($id){
 }
 function getFacilityRow($id){ //based on facility id.
 	$id = cleanStrForDb($id);
-	$result = mysql_query("SELECT * FROM facility WHERE id='$id'");             
+	$result = mysql_queryCustom("SELECT * FROM facility WHERE id='$id'");             
 	if($result===false){
 		$em='getFacilityRow: query fail';
 		throwMyExc($em);
@@ -157,7 +157,7 @@ function getFacilityRowHtml($id){
 
 //function getFacilityIdFromUsername($un){
 //	 $un = cleanStrForDb($un);
-//	 $result = mysql_query("SELECT facilityId FROM user WHERE username='$un'");           //check un/pw against db.
+//	 $result = mysql_ queryCustom("SELECT facilityId FROM user WHERE username='$un'");           //check un/pw against db.
 //	 if($result===false){
 //	 	$em='getFacilityIdFromUsername: query fail';
 //	 	throwMyExc($em);
@@ -195,7 +195,8 @@ function getOriginalUserUserFacilityBean($facilityId){
    *
    * facilitytypeid 9: is the outpatient case. 
    */
-   $r = mysql_query('select * from userFacility where facilityId = '.$facilityId.' and ( totalFacilityBeds != -1  or  facilityTypeId = 9 )');
+	$facilityId = cleanStrForDb($facilityId);
+   $r = mysql_queryCustom('select * from userFacility where facilityId = '.$facilityId.' and ( totalFacilityBeds != -1  or  facilityTypeId = 9 )');
    if($r===false) 
       throwMyExc('getOriginalUserUserFacilityBean: query failed');
    $n = mysql_num_rows($r);

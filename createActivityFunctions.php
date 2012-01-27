@@ -7,7 +7,7 @@ function createCustomActivity($title,$descr,$surveyCategoryId,$userId)
 	$surveyCategoryId = cleanStrForDb($surveyCategoryId);
 	$userId = cleanStrForDb($userId);
 	
-	 $res=mysql_query("INSERT INTO customActivity (title, description, surveyCategoryId, userid)
+	 $res=mysql_queryCustom("INSERT INTO customActivity (title, description, surveyCategoryId, userid)
 		     VALUES ('".$title."','".$descr."', ".$surveyCategoryId.", ".$userId.")");
 	 if($res===false){
 	 	throwMyExc("createcustomactivity: insert query returned false");	
@@ -37,7 +37,7 @@ function createCustomActivity($title,$descr,$surveyCategoryId,$userId)
 //	$isForNatal = "yes";
 //	//insert into db.
 //	
-//	 $res = mysql_query("INSERT INTO activity (title, description, activityCategoryId, isForAdult, isForPediatric, isForNatal)
+//	 $res = mysql _queryCustom("INSERT INTO activity (title, description, activityCategoryId, isForAdult, isForPediatric, isForNatal)
 //		     VALUES ('".$title."','".$descr."', ".$activityCategoryId.",'".$isForAdult."','".$isForPediatric."','".$isForNatal."')");
 //	 if($res===false){
 //	 	throwMyExc("createactivity: insert query returned false");	

@@ -2,7 +2,7 @@
 function getFacilityTypeTitleFromUsername($un){
 	$un = cleanStrForDb($un);
 
-	$result = mysql_query("select user.username, facilityType.title from user join facilityType  on user.facilityTypeid =  facilityType.id  where  user.username = '".$un."' ");
+	$result = mysql_queryCustom("select user.username, facilityType.title from user join facilityType  on user.facilityTypeid =  facilityType.id  where  user.username = '".$un."' ");
 	if($result===false){
 		$em='getFacilityTypeTitleFromUsername: query fail';
 		throwMyExc($em);
@@ -25,14 +25,16 @@ function getFacilityTypeTitleFromUsername($un){
  * have option of critical access hospital 
  */
 function getFacilityTypeRowsHtml($fid, $is_cf){
+	$fid = cleanStrForDb($fid);
+	$is_cf = cleanStrForDb($is_cf);
 	if($is_cf==0){
-	  $res = mysql_query('select isMoreThan26TLB, isCriticalAccessHospital from userFacility where id = '.$fid);   //isMoreThan26TLB : q is "has 26 or more ... ?"
+	  $res = mysql_queryCustom('select isMoreThan26TLB, isCriticalAccessHospital from userFacility where id = '.$fid);   //isMoreThan26TLB : q is "has 26 or more ... ?"
 	  if($res===false){
 	  	$em='getFacilityTypeRowsHtml: userfacility:  query fail';
 	  	throwMyExc($em);
 	  }
 	}elseif($is_cf==1){
-	  $res = mysql_query('select isMoreThan26TLB, isCriticalAccessHospital from customFacility where id = '.$fid);
+	  $res = mysql_queryCustom('select isMoreThan26TLB, isCriticalAccessHospital from customFacility where id = '.$fid);
 	  if($res===false){
 	  	$em='getFacilityTypeRowsHtml: customfacility: query fail';
 	  	throwMyExc($em);
@@ -61,7 +63,7 @@ function getFacilityTypeRowsHtml($fid, $is_cf){
 	}
 	
 	//-------
-	$result = mysql_query("SELECT * FROM facilityType where myOrder > 0   order by 'order' asc ");           //check un/pw against db.
+	$result = mysql_queryCustom("SELECT * FROM facilityType where myOrder > 0   order by 'order' asc ");           //check un/pw against db.
 	if($result === FALSE){
 		throwMyExc('getFacilityTypeRowsHtml: query fail');
 	}
@@ -97,7 +99,7 @@ function setUserFacilityType($userId,$userFacilityId,$facilityTypeId){
 	$userId = cleanStrForDb($userId);
 	$userFacilityId = cleanStrForDb($userFacilityId);
 	$facilityTypeId = cleanStrForDb($facilityTypeId);
-    $result = mysql_query("update  userFacility  set facilityTypeId = ".$facilityTypeId." where id = ".$userFacilityId." and userid=".$userId."  ");   //try to update the facility id num in the user row. if fail, return false.
+    $result = mysql_queryCustom("update  userFacility  set facilityTypeId = ".$facilityTypeId." where id = ".$userFacilityId." and userid=".$userId."  ");   //try to update the facility id num in the user row. if fail, return false.
 	if($result===false){
 		throwMyExc("setUserFacilityType: query fail");
 	}
@@ -111,7 +113,7 @@ function setCustomFacilityType($userId,$customFacilityId,$facilityTypeId){
 	$customFacilityId = cleanStrForDb($customFacilityId);
 	$facilityTypeId = cleanStrForDb($facilityTypeId);
 	 
-	$result = mysql_query("update  customFacility  set facilityTypeId = ".$facilityTypeId." where id = ".$customFacilityId." and userid=".$userId."  ");   //try to update the facility id num in the user row. if fail, return false.
+	$result = mysql_queryCustom("update  customFacility  set facilityTypeId = ".$facilityTypeId." where id = ".$customFacilityId." and userid=".$userId."  ");   //try to update the facility id num in the user row. if fail, return false.
 	if($result===false){
 		throwMyExc("setCustomFacilityType: update query fail");
 	}
@@ -126,7 +128,7 @@ function setCustomFacilityType($userId,$customFacilityId,$facilityTypeId){
  * this is not implemented yet - on hold.
  */
 //function getFacilityTypeOptionList(){
-//	$result = mysql_query("SELECT * FROM facilityType");           //check un/pw against db.
+//	$result = mysql_   queryCustom("SELECT * FROM facilityType");           //check un/pw against db.
 //	if($result === FALSE){
 //		throwMyExc('Error: getfacilitytypeoptionlist: query result was false');
 //	}
@@ -152,7 +154,7 @@ function setCustomFacilityType($userId,$customFacilityId,$facilityTypeId){
  */
 //function getFacilityTypeIdFromUsername($un){
 //	$un = cleanStrForDb($un);
-//	$result = mysql_query("SELECT facilityTypeId FROM user WHERE username='$un'");
+//	$result = mysql_  queryCustom("SELECT facilityTypeId FROM user WHERE username='$un'");
 //	if($result===false){
 //		$em='getFacilityTypeIdFromUsername:query fail';
 //		throwMyExc($em);

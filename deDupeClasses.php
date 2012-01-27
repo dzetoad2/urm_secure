@@ -94,7 +94,7 @@ class DeDupeUtilities {
 	//get the actual rows in facility, for this group's 3digzip.
 	static function getRowsOfGroup($g){
 	   //the $g group is like '750', so find all with regexp ^750.
-	   $r = mysql_query('select id, name, address, zip, facilityTypeAbbrev  from facility where zip  REGEXP  "^'.$g.'"     ;  ');
+	   $r = mysql_queryCustom('select id, name, address, zip, facilityTypeAbbrev  from facility where zip  REGEXP  "^'.$g.'"     ;  ');
 	   if($r===false) throw new Exception('getrowsofgroup: query fail');
 	   $arr = array();
 	   while($row = mysql_fetch_assoc($r)){
@@ -108,7 +108,7 @@ class DeDupeUtilities {
 	
 	static function getAllZipGroups(){
 	  // search thru db looking for all zip groups.
- 	  $r = mysql_query('select distinct substring(zip, 1, 3) as subzip from facility order by subzip');
+ 	  $r = mysql_queryCustom('select distinct substring(zip, 1, 3) as subzip from facility order by subzip');
 	  if($r===false) throw new Exception('getallzipgroups: query fail');
 	  $groups = array();
 	  while($row = mysql_fetch_assoc($r)){
@@ -137,7 +137,7 @@ class DeDupeUtilities {
 
 
 	static function getFacilityRowCount(){
-		$r = mysql_query('select count(id) as c from facility');
+		$r = mysql_queryCustom('select count(id) as c from facility');
 		if($r===false) throw new Exception ('getfacilrowcount: query fail');
 		$row = mysql_fetch_assoc($r);
 		$c = $row['c'];
@@ -177,7 +177,7 @@ class DeDupeUtilities {
 	}
 	static function getFacilInfo($rownum){
 		//    select ....    limit  2,1   -> gives the 3rd row by itself.  1 means only 1 of the rows.
-		$r1 = mysql_query('select id,name,address, city,state, zip,   facilityTypeAbbrev  from facility  order by facilityTypeAbbrev  LIMIT '.$rownum.',  1  ;');
+		$r1 = mysql_queryCustom('select id,name,address, city,state, zip,   facilityTypeAbbrev  from facility  order by facilityTypeAbbrev  LIMIT '.$rownum.',  1  ;');
 		if($r1===false) throw new Exception('getfacilidnameaddressarray:  r1 query fail');
 		$idArr = array();
 		$row = mysql_fetch_assoc($r1);
@@ -207,7 +207,7 @@ class DeDupeUtilities {
 		/*  'limit 0,2' gives two rows, not 3.     'limit 1,2' gives 
 		 * 
 		 */
-		$r1 = mysql_query('select id,name,address from facility where facilityTypeAbbrev = "'.$arrType.'"  LIMIT '.$limitStart.', '.$limitEnd.' ;');
+		$r1 = mysql_queryCustom('select id,name,address from facility where facilityTypeAbbrev = "'.$arrType.'"  LIMIT '.$limitStart.', '.$limitEnd.' ;');
 		if($r1===false) throw new Exception('getfacilidnameaddressarray:  r1 query fail');
 		$idArr = array();
 		while($row = mysql_fetch_assoc($r1)){
@@ -225,7 +225,7 @@ class DeDupeUtilities {
 	
 		$sqlStr = 'insert into facilityComparison (row1id, row2id, row1TypeId, row2TypeId, zip1, distance)  
 		                  values('.$id1.', '.$id2.','.$type1Id.', '.$type2Id.', '.$zip1.', '.$distance.'  ) ';
-		$r = mysql_query($sqlStr);
+		$r = mysql_queryCustom($sqlStr);
 		if($r===false){
 			throw new Exception('writefacilcomparisonrow: query r  failed, mysqlerr: '.mysql_error().', sqlstr: '.$sqlStr);
 		}
@@ -258,11 +258,11 @@ class DeDupeUtilities {
 		* 	$o = 'uninit';
 		*	$s1 = 'abcdef';
 		* 	$s2 = 'abc def ghi';
-		*   $rs = mysql_query("select count(id) from facility");
+		*   $rs = mysql_queryCustom("select count(id) from facility");
 		*/
-		$rs0 = mysql_query("CALL levenshtein('".$s1."','".$s2."',@outInt); ");
-		// 	$rs0 = mysql_query("CALL levenshtein_ratio('abc def','abcdef',@outInt);");
-		$rs = mysql_query("select @outInt;");
+		$rs0 = mysql_queryCustom("CALL levenshtein('".$s1."','".$s2."',@outInt); ");
+		// 	$rs0 = mysql_queryCustom("CALL levenshtein_ratio('abc def','abcdef',@outInt);");
+		$rs = mysql_queryCustom("select @outInt;");
 		if($rs0===false){
 			throw new Exception('rs0 was false: error: '.mysql_error());
 		}
@@ -332,7 +332,7 @@ class DeDupeUtilities {
  	
 //	static function getLastRow_fromdb(){
 //	
-//		$r = mysql_query(' SELECT * FROM  facilityComparison    order by  row1  desc');
+//		$r = mysql_queryCustom(' SELECT * FROM  facilityComparison    order by  row1  desc');
 //		if($r===false) throw new Exception('getminrow: query fail');
 //		$row = mysql_fetch_assoc($r); //get the last row , with the highest count.
 //		$numrows = mysql_num_rows($r);

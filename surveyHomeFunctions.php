@@ -10,7 +10,7 @@ function getMyFacilitiesRowsHtml_WithStatus($userId){
 	$userId = cleanStrForDb($userId);
 	 
 	
-	$result = mysql_query("  select userFacility.id, facility.name, facility.address, facility.city, facility.state, facility.zip, facilityType.title, facilityType.id AS facilityTypeId from user
+	$result = mysql_queryCustom("  select userFacility.id, facility.name, facility.address, facility.city, facility.state, facility.zip, facilityType.title, facilityType.id AS facilityTypeId from user
 join userFacility on user.id = userFacility.userid
 left join facilityType on facilityType.id = userFacility.facilityTypeId 
 join facility on userFacility.facilityId = facility.id
@@ -55,7 +55,7 @@ function getMyCustomFacilitiesRowsHtml_WithStatus($userId){
 	 */
 	$userId = cleanStrForDb($userId);
 
-	$result = mysql_query("  select customFacility.id, customFacility.name, customFacility.address, 
+	$result = mysql_queryCustom("  select customFacility.id, customFacility.name, customFacility.address, 
 	customFacility.city, customFacility.state, customFacility.zip, facilityType.title, facilityType.id AS facilityTypeId from customFacility
 	left join facilityType on facilityType.id = customFacility.facilityTypeId 
 	where userid = ".$userId." ");           //check un/pw against db.

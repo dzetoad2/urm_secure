@@ -11,7 +11,7 @@ function doFindCloseMatches(){
 	
 }
 function clearFacilityComparisonTable(){
-  $r = mysql_query('TRUNCATE  table  facilityComparison');
+  $r = mysql_queryCustom('TRUNCATE  table  facilityComparison');
   if($r===false) die('error truncating');
 }
 

@@ -1,7 +1,12 @@
 <?php
  
 function isActivityAnswered($userId, $facilityId, $activityId, $isCustomFacility, $isCustomActivity){
-	$result = mysql_query("  select  id from surveyAnswer where userId=".$userId." and activityId = ".$activityId." and facilityId=".$facilityId." and isCustomFacility=".$isCustomFacility.
+	$userId = cleanStrForDb($userId);
+	$facilityId = cleanStrForDb($facilityId);
+	$activityId = cleanStrForDb($activityId);
+	$isCustomFacility = cleanStrForDb($isCustomFacility);
+	$isCustomActivity = cleanStrForDb($isCustomActivity);
+	$result = mysql_queryCustom("  select  id from surveyAnswer where userId=".$userId." and activityId = ".$activityId." and facilityId=".$facilityId." and isCustomFacility=".$isCustomFacility.
 	          " and isCustomActivity=".$isCustomActivity."   ");
 	if($result===false){
 		throwMyExc('isActivityAnswered(): query failed');
@@ -23,7 +28,8 @@ function isActivityAnswered($userId, $facilityId, $activityId, $isCustomFacility
  * Checks if THIS activitycategory is complete.
  */
 function isActivityCategoryComplete($userId, $facilityId, $activityCategoryId, $isCustomFacility){
-	$result = mysql_query("  select  id from activity where activityCategoryId=".$activityCategoryId);
+	$activityCategoryId = cleanStrForDb($activityCategoryId);
+	$result = mysql_queryCustom("  select  id from activity where activityCategoryId=".$activityCategoryId);
 	if($result===FALSE){
 		$errorMsg='isActivityCategoryComplete(): got false as query result on activitycategory table, activitycat id is: '.$activityCategoryId;
 		throwMyExc($errorMsg);
@@ -39,7 +45,8 @@ function isActivityCategoryComplete($userId, $facilityId, $activityCategoryId, $
 }
 
 function isActivityCategoryStarted($userId, $facilityId, $activityCategoryId, $isCustomFacility){
-	$result = mysql_query("  select  id from activity where activityCategoryId=".$activityCategoryId);
+	$activityCategoryId = cleanStrForDb($activityCategoryId);
+	$result = mysql_queryCustom("  select  id from activity where activityCategoryId=".$activityCategoryId);
 	if($result===FALSE){
 		$errorMsg='isActivityCategoryComplete(): got false as query result on activitycategory table, activitycat id is: '.$activityCategoryId;
 		throwMyExc($errorMsg);
@@ -61,16 +68,20 @@ function isActivityCategoryGroupOtherCategoriesComplete($userId, $facilityId, $a
 	/* 1. find the all activitycategories (ids) with same activitycategorydocid as this one
 	 * 
 	 */
+	$activityCategoryId = cleanStrForDb($activityCategoryId);
+	
 	$q = "select activityCategoryDocId from activityCategory where id = ".$activityCategoryId;
-	$r1 = mysql_query($q);
+	$r1 = mysql_queryCustom($q);
 	if($r1===false)throwMyExc('isActivityCategoryGroupOtherCategoriesComplete: query r1 false, query str: '.$q);
 	$row = mysql_fetch_assoc($r1);
 	$activityCategoryDocId = $row['activityCategoryDocId'];
+	$activityCategoryDocId = cleanStrForDb($activityCategoryDocId);
+	
 	if($activityCategoryDocId == '999'){
 		return true;//this group is complete - for all who dont belong to subgroups.
 	}
 	$q2 = "  select id from activityCategory where activityCategoryDocId = ".$activityCategoryDocId;
-	$r2 = mysql_query($q2);
+	$r2 = mysql_queryCustom($q2);
 	if($r2===false)throwMyExc('isActivityCategoryGroupOtherCategoriesComplete: query r2 false, query str: '.$q2);
 	
 	while($row = mysql_fetch_assoc($r2)){
@@ -89,8 +100,9 @@ function isActivityCategoryGroupOtherCategoriesComplete($userId, $facilityId, $a
 function isActivityCategoryGroupComplete($userId, $facilityId, $activityCategoryDocId, $isCustomFacility, 	$isCustomActivity){
 	/* 1. find the all activitycategories (ids) with same activitycategorydocid as this one
 	 */
+	$activityCategoryDocId = cleanStrForDb($activityCategoryDocId);
 	$q2 = "  select id from activityCategory where activityCategoryDocId = ".$activityCategoryDocId;
-	$r2 = mysql_query($q2);
+	$r2 = mysql_queryCustom($q2);
 	if($r2===false)throwMyExc('isactivitycategorygroupcomplete: query r2 false, query str: '.$q2);
 	
 	while($row = mysql_fetch_assoc($r2)){
@@ -111,7 +123,14 @@ function getNextActivityId_FromOwnAC($userId, $facilityId, $activityCategoryId, 
 	//3. make a list of the ones in 1 that are not in 2, then grab one from that.
 	//3. return  one of those if there is one or more remaining, else return -1 if all activiites 
  	//in this category are already done.
-    $result_activitiesNotAnswered = mysql_query("
+ 	$activityCategoryId = cleanStrForDb($activityCategoryId);
+	$userId = cleanStrForDb($userId);
+	$facilityId = cleanStrForDb($facilityId);
+	$isCustomActivity = cleanStrForDb($isCustomActivity);
+	$isCustomFacility = cleanStrForDb($isCustomFacility);
+	
+	
+    $result_activitiesNotAnswered = mysql_queryCustom("
     SELECT activity.id as activity_Id
     from
     activity
@@ -160,8 +179,10 @@ function getNextActivityId_WithinACGroup($userId, $facilityId, $activityCategory
 	 *  2. use that docid to get all the ids of ac's with same docid.
 	 *    for each of those ac's, check if its complete or not, if not complete, then return the getnextacivityid_fromownac answer of that specific one.
 	 */
+	$activityCategoryId = cleanStrForDb($activityCategoryId);
+	
 	$q = "select activityCategoryDocId from activityCategory where id = ".$activityCategoryId;
-	$r1 = mysql_query($q);
+	$r1 = mysql_queryCustom($q);
 	if($r1===false)throwMyExc('getNextActivityId_WithinACGroup: query r1 false, query str: '.$q);
 	$row = mysql_fetch_assoc($r1);
 	$activityCategoryDocId = $row['activityCategoryDocId'];
@@ -169,8 +190,9 @@ function getNextActivityId_WithinACGroup($userId, $facilityId, $activityCategory
 		$em='getNextActivityId_WithinACGroup: activitycategorydocid = 999; not possible! we only call this func if we already know the activitycategorydocId is NOT 999.';
 		throwMyExc($em);
 	}	
+	$activityCategoryDocId = cleanStrForDb($activityCategoryDocId);
 	$q2 = "  select id from activityCategory where activityCategoryDocId = ".$activityCategoryDocId;
-	$r2 = mysql_query($q2);
+	$r2 = mysql_queryCustom($q2);
 	if($r2===false)throwMyExc('getNextActivityId_WithinACGroup: query r2 false, query str: '.$q2);
 	
 	while($row = mysql_fetch_assoc($r2)){
@@ -199,7 +221,8 @@ function isSurveyCategoryComplete($userId, $facilityId,$isCustomFacility,   $sur
 	//1. check activitycategories for normal activities.
 	//2. check customActivities for this surveyCategory.
 	//1.
-	$result = mysql_query("  select  id from activityCategory where surveyCategoryId=".$surveyCategoryId);
+	$surveyCategoryId = cleanStrForDb($surveyCategoryId);
+	$result = mysql_queryCustom("  select  id from activityCategory where surveyCategoryId=".$surveyCategoryId);
 	if($result===FALSE){
 		$errorMsg='error: issurveycategorycomplete got false as query result on activitycategory table, surveycat id is: '.$surveyCategoryId;
 		throwMyExc($errorMsg);
@@ -217,7 +240,8 @@ function isSurveyCategoryComplete($userId, $facilityId,$isCustomFacility,   $sur
 
 function isSurveyCategoryStarted($userId, $facilityId,$isCustomFacility,   $surveyCategoryId   ){
 
-	$result = mysql_query("  select  id from activityCategory where surveyCategoryId=".$surveyCategoryId);
+	$surveyCategoryId = cleanStrForDb($surveyCategoryId);
+	$result = mysql_queryCustom("  select  id from activityCategory where surveyCategoryId=".$surveyCategoryId);
 	if($result===FALSE){
 		$errorMsg='error: issurveycategorystarted got false as query result on activitycategory table, surveycat id is: '.$surveyCategoryId;
 		throwMyExc($errorMsg);
@@ -248,7 +272,9 @@ function isSurveyCategoryStarted($userId, $facilityId,$isCustomFacility,   $surv
 
 function hasCustomActivities($userId,  $surveyCategoryId  ){
     //check to see if this user has any custom activities defined for this survey category  (customacdtivty has only surveycategoryid and userid.  so thats it)
-  	$r = mysql_query("  select  id from customActivity where userid=".$userId." and surveyCategoryId=".$surveyCategoryId);
+  	$userId = cleanStrForDb($userId);
+  	$surveyCategoryId = cleanStrForDb($surveyCategoryId);
+	$r = mysql_queryCustom("  select  id from customActivity where userid=".$userId." and surveyCategoryId=".$surveyCategoryId);
   	if($r===false){
   		$em='hascustomactivities: query fail';
   		throwMyExc($em);
@@ -278,7 +304,9 @@ function hasCustomActivities($userId,  $surveyCategoryId  ){
 function isCustomActivitiesComplete($userId, $facilityId, $isCustomFacility, $surveyCategoryId){
 	//1. loop thru the defined custom activities for this user.  each one has to be 'isActivityAnswered() == true' to return true, else we return false.
 	//===============================================    
-    $result = mysql_query("  select  id from customActivity where userid=".$userId." and surveyCategoryId = ".$surveyCategoryId.";");
+	$userId = cleanStrForDb($userId);
+	$surveyCategoryId = cleanStrForDb($surveyCategoryId);
+    $result = mysql_queryCustom("  select  id from customActivity where userid=".$userId." and surveyCategoryId = ".$surveyCategoryId.";");
 	if($result === FALSE){
 		$errorMsg ='iscustomactivitiescomplete(): select id from customactivity: query failed';
 		throwMyExc($errorMsg);
@@ -306,7 +334,7 @@ function isCustomActivitiesComplete($userId, $facilityId, $isCustomFacility, $su
 function isFacilityComplete($userId, $fid){
  //loop through survey categories, getting their ids. then, using the userid and fid, and customFac is 0,
  //get whether...
-    $result = mysql_query("select id from surveyCategory");
+    $result = mysql_queryCustom("select id from surveyCategory");
     if($result === FALSE){
 		$errorMsg='error: isfacilitycomplete: select id from customactivity: query result was false';
 		throwMyExc($errorMsg);
@@ -329,7 +357,7 @@ function isFacilityComplete($userId, $fid){
 function isCustomFacilityComplete($userId, $fid){
  //loop through survey categories, getting their ids. then, using the userid and fid, and customFac is 1,
  //get whether...
-    $result = mysql_query("select id from surveyCategory");
+    $result = mysql_queryCustom("select id from surveyCategory");
     if($result === FALSE){
 		$errorMsg='error: isfacilitycomplete: select id from customactivity: query result was false';
 		throwMyExc($errorMsg);

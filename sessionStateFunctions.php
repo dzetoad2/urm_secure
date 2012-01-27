@@ -4,7 +4,7 @@
 	function printSessionState($userId){
 		$userId = cleanStrForDb($userId);
 		
-		$r = mysql_query("select sessionState from user where id=".$userId);
+		$r = mysql_queryCustom("select sessionState from user where id=".$userId);
     	$row = mysql_fetch_assoc($r);
     	$s = $row['sessionState'];
     	$o = '<br/>'.$s.'<br/>';
@@ -54,7 +54,7 @@
   	$stateStr = cleanStrForDb($stateStr);
   	
   	
-  	$r = mysql_query("update user set sessionState='".$stateStr."' where  id=".$userId);
+  	$r = mysql_queryCustom("update user set sessionState='".$stateStr."' where  id=".$userId);
   	if($r===false){
   		return -1;
   	    $errorMsg = "error: savepostandsessionvars:  update query threw a false result";
@@ -76,7 +76,7 @@
     
   	$userId = cleanStrForDb($userId);
   	
-  	$r = mysql_query("select sessionState from user where id=".$userId);
+  	$r = mysql_queryCustom("select sessionState from user where id=".$userId);
   	if($r===false){
   		throwMyExc('query fail');
   	}

@@ -28,7 +28,8 @@ $pediatricIntensiveCareBeds   )
 	if($isOutpatientPRCFlag=='isOutpatientPRC'){
 		$facilityTypeId = 9; //outpatient prc, the newest type. if
 	}
-
+	$facilityTypeId = cleanStrForDb($facilityTypeId);
+	
 	$userId = cleanStrForDb($userId);
 	$name = cleanStrForDb($name);
 	$address = cleanStrForDb($address);
@@ -46,7 +47,7 @@ $pediatricIntensiveCareBeds   )
 	$pediatricIntensiveCareBeds = cleanStrForDb($pediatricIntensiveCareBeds);
 
 	//write to db.
-	 $res = mysql_query("INSERT INTO customFacility (userid, facilityTypeId, name, address,city,state,zip,
+	 $res = mysql_queryCustom("INSERT INTO customFacility (userid, facilityTypeId, name, address,city,state,zip,
 		     phone,isMoreThan26TLB,isCriticalAccessHospital, totalFacilityBeds,
 		     medicalSurgicalIntensiveCareBeds, neoNatalIntensiveCareBeds, otherIntensiveCareBeds,
 		     pediatricIntensiveCareBeds)
@@ -119,7 +120,9 @@ $pediatricIntensiveCareBeds   )
 		//  it was no, and still is no. so CHANGE NOTHING w.r.t. facil type.  
 		$ftiStr=' '; // so this is not QUITE what we want... need to get the current state of critaccesshosp.
 	}
-	 $res = mysql_query('update customFacility 
+	$ftiStr = cleanStrForDb($ftiStr);
+	
+	 $res = mysql_queryCustom('update customFacility 
 	         set 
 	         '.$ftiStr.'  
 	         userid='.$userId.', 
@@ -157,7 +160,8 @@ $pediatricIntensiveCareBeds   )
 
 
 function getCustomFacilityFullBean($customFacilityId){
-	$r = mysql_query('select * from customFacility where id='.$customFacilityId);
+	$customFacilityId = cleanStrForDb($customFacilityId);
+	$r = mysql_queryCustom('select * from customFacility where id='.$customFacilityId);
 	if($r===false){
 		 throwMyExc('getcustomfacilityfullbean: query fail, customfacilityid: '.$customFacilityId);
 	}
@@ -199,7 +203,7 @@ function getMyCustomFacilitiesRowsHtml($userId){
 	 where user.username = 'admin'
 	 */
 	$userId = cleanStrForDb($userId);
-	$result = mysql_query("  select customFacility.id, customFacility.name, customFacility.address, 
+	$result = mysql_queryCustom("  select customFacility.id, customFacility.name, customFacility.address, 
 	customFacility.city, customFacility.state, customFacility.zip, facilityType.title, customFacility.facilityTypeId AS
 	  facilityTypeId  from customFacility
 	left join facilityType on facilityType.id = customFacility.facilityTypeId 
@@ -245,8 +249,8 @@ function getMyCustomFacilitiesRowsHtml($userId){
 }
 
 function getIsCriticalAccessHospitalForCustomFacility($customFacilityId){
-	$id = $customFacilityId;
-	$res = mysql_query('select isCriticalAccessHospital from customFacility where id='.$customFacilityId);
+	$customFacilityId = cleanStrForDb($customFacilityId);
+	$res = mysql_queryCustom('select isCriticalAccessHospital from customFacility where id='.$customFacilityId);
 	if($res===false){
 		throwMyExc('getiscriticalaccesshospital(): query fail');
 	}
@@ -266,7 +270,7 @@ function getStatesRowsHtml($state){
 	//state input is which one should be 'selected'.   selected="selected" for an option.
 	//get rows of option element with id and name from state table
 	$state=trim($state);
-	$res = mysql_query('select id,name from state  order by name');
+	$res = mysql_queryCustom('select id,name from state  order by name');
 	if($res===false){
 		throwMyExc('getstatesrowshtml: query fail');
 	}
@@ -289,7 +293,8 @@ function getStatesRowsHtml($state){
 }
 function isValidState($state){
 	//if the state is not a 2char combo found in db, return false. else return true.
-	$res = mysql_query('select count(name) as c from state where name="'.$state.'"   ');
+	$state = cleanStrForDb($state);
+	$res = mysql_queryCustom('select count(name) as c from state where name="'.$state.'"   ');
 	$row = mysql_fetch_array($res);
 	$c = $row['c'];
 	if($c==='1'){

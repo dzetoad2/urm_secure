@@ -29,8 +29,8 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 	}
 	
 	
-	
-	$result = mysql_query("  select  id, title from surveyCategory ".$conditionStr);           //check un/pw against db.
+	//CLEAN - OK.
+	$result = mysql_queryCustom("  select  id, title from surveyCategory ".$conditionStr);           //check un/pw against db.
 	if($result == FALSE){
 		return " ";
 	}
@@ -112,7 +112,12 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
  */
 function dropSurveyAnswers($userId,$fid,$is_cf,$surveyCategoryId){
    //get list of activityIds which are under the surveyCategoryId specified.
-   $res1 = mysql_query("  
+   $userId = cleanStrForDb($userId);
+   $fid = cleanStrForDb($fid);
+   $is_cf = cleanStrForDb($is_cf);
+   $surveyCategoryId = cleanStrForDb($surveyCategoryId);
+   
+   $res1 = mysql_queryCustom("  
       select  activity.id as aid    
       from activity 
       inner join (
@@ -135,7 +140,7 @@ function dropSurveyAnswers($userId,$fid,$is_cf,$surveyCategoryId){
        " and isCustomFacility = ".$is_cf.
        " and isCustomActivity = 0 ". 
        " and activityId = ".$aid ;
-      $res2 = mysql_query($qtext);
+      $res2 = mysql_queryCustom($qtext);
       if($res2===FALSE)
         throwMyExc("query failed: 2nd query in dropsurveyanswers(), count so far is: ".$count.", userid:".$userId.", fid:".$fid.", is_cf:".$is_cf.",aid:".$aid.",mysqlerror: ".mysql_error());
       $n = mysql_affected_rows();
@@ -150,7 +155,7 @@ function dropSurveyAnswers($userId,$fid,$is_cf,$surveyCategoryId){
     //now drop the customactivities i did for this surveycategory.
     //get list of customActivities for this user.
     $q4 = 'select id from customActivity where userId = '.$userId.' and surveyCategoryId = '.$surveyCategoryId.' ; ';
-    $r4 = mysql_query($q4);
+    $r4 = mysql_queryCustom($q4);
     if($r4===false){
 		$em='dropsurveyanswers: q4 query failed, q4: '.$q4;
     	throwMyExc($em);
@@ -165,7 +170,7 @@ function dropSurveyAnswers($userId,$fid,$is_cf,$surveyCategoryId){
         " and isCustomFacility = ".$is_cf.
         " and isCustomActivity = 1 ". 
         " and activityId = ".$aid ;
-        $r5 = mysql_query($q5);
+        $r5 = mysql_queryCustom($q5);
     	if($r5===false){
     		$em='dropsurveyanswers: r5 query failed, q5: '.$q5;
     		throwMyExc($em);
@@ -204,9 +209,12 @@ function getSurveyCategoryOwner($userFacilityId, $is_cf, $surveyCategoryId){
    $fid = getFacilityIdFromUserFacility($userFacilityId); //cached usually.
    $o = '';
    $un_arr = array();
+   
+   $is_cf = cleanStrForDb($is_cf);
+   
    while($row = mysql_fetch_array($res1)){ 
       //in list of activities now. for this activity, see if any answers match.
-      $res2 = mysql_query("
+      $res2 = mysql_queryCustom("
       select surveyAnswer.userId as userId 
       from surveyAnswer 
       join userFacility 
@@ -253,7 +261,9 @@ function getSurveyCategoryOwner($userFacilityId, $is_cf, $surveyCategoryId){
 
 // return the mysql resultset.
 function getActivitiesInSurveyCategory($surveyCategoryId){
-  $r = mysql_query("
+	$surveyCategoryId = cleanStrForDb($surveyCategoryId);
+	
+    $r = mysql_queryCustom("
 select activity.id as aid, activity.title, activityCategory.id as actCat_id, surveyCategory.id  as scat_id 
 from activity
 join activityCategory
@@ -289,11 +299,12 @@ function getFacilityTypeStrFromFacilityEntry($userId, $facilityId, $isCustomFaci
 	if($isCustomFacility==1){
 		// fid = customFacilityId -   table = customFacility      get facilityTypeId
 		$customFacilityId = $facilityId;
+		$customFacilityId = cleanStrForDb($customFacilityId);
 		$q1 = 'select facilityTypeId, title
 				 from customFacility 
 				 join facilityType ON  customFacility.facilityTypeId = facilityType.id
 				 where customFacility.id = '.$customFacilityId;
-		$r1 = mysql_query($q1);
+		$r1 = mysql_queryCustom($q1);
 		if($r1===false){ 
 			$em='getfacilitytypeidfromfacilityid: query q1 fail';
 			throwMyExc($em);
@@ -306,11 +317,12 @@ function getFacilityTypeStrFromFacilityEntry($userId, $facilityId, $isCustomFaci
 	}elseif($isCustomFacility==0){
 		// fid = userFacilityId        table = userFacility     get  facilityTypeId
 		$userFacilityId = $facilityId;
+		$userFacilityId = cleanStrForDb($userFacilityId);
 		$q2 = 'select facilityTypeId, title 
 				from userFacility 
 		        join facilityType  ON  userFacility.facilityTypeId = facilityType.id
 				where userFacility.id = '.$userFacilityId;
-		$r2 = mysql_query($q2);
+		$r2 = mysql_queryCustom($q2);
 		if($r2===false){
 			$em='getfacilitytypeidfromfacilityid: query q2 fail';
 			throwMyExc($em);
@@ -358,7 +370,8 @@ function getFacilityTypeStrFromFacilityEntry($userId, $facilityId, $isCustomFaci
 // Only call this for facilities - not valid for customFacilities!
 function getFacilityIdFromUserFacility($userFacilityId){
   //check the userfacility table for this given id. get the facility id
-  $r = mysql_query("select facilityId from userFacility where id = ".$userFacilityId);
+  $userFacilityId = cleanStrForDb($userFacilityId);
+  $r = mysql_queryCustom("select facilityId from userFacility where id = ".$userFacilityId);
   if($r===false)
    throwMyExc('getfacilityidfromuserfacility: query failed');
   if(mysql_num_rows($r) === 0)
@@ -382,7 +395,7 @@ function getUsername($userId){
  if($userId==='')
    return '';
  $userId = cleanStrForDb($userId);
- $r = mysql_query("select username from user where id = ".$userId);
+ $r = mysql_queryCustom("select username from user where id = ".$userId);
  if($r===false)
   throwMyExc('getUsername: query failed.');
  if(mysql_num_rows($r) === 0){
@@ -395,7 +408,7 @@ function getUsername($userId){
 //get a userid from username
 function getUserId($un){
  $un = cleanStrForDb($un);
- $r = mysql_query("select id from user where username = '".$un."' ");
+ $r = mysql_queryCustom("select id from user where username = '".$un."' ");
  if($r===false)
   throwMyExc('getUserId: query failed, username was: '.$un);
  if(mysql_num_rows($r) === 0){
