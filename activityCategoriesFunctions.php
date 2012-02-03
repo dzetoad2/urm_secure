@@ -271,7 +271,7 @@ function deleteCustomActivity($userId, $customActivityId){
 	$numrows = mysql_num_rows($r1);
 	if($numrows>0){
 		//none! so stop, return error msg! (not an Exception)
-		$o['msg'] = 'There were '. $numrows .' total survey answer(s) found for this User Created Activity - please delete the corresponding answer for each facility first';
+		$o['msg'] = 'There were '. $numrows .' total survey answer(s) found for this User Created Activity.  Please delete the corresponding answer for each facility first';
 		return $o;
 	}
 	//Ok, so numrows is 0, now go ahead and delete the customActivity.

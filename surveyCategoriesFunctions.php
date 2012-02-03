@@ -61,8 +61,9 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 		}
 		//========DEFAULT UNLESS WE NEED OTHERWISE=====
 		$isAllowed=true;
-		$classRow = 'surveyCategoryRow clickable';
-		$dropImgSrcStr = 'src="images/b_drop.png"';
+		$classRow = 'surveyCategoryRow';
+		$dropCellStr = '<td class="drop clickable"><img src="images/b_drop.png" /></td>'   ;
+		
 		$surveyCategoryOwner='';
 		$surveyCategoryOwnerCellStr = ''; //<td>iscustomfacility var: '.$isCustomFacility.'</td>';
 		
@@ -71,19 +72,19 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 		  $surveyCategoryOwnerId = getUserId($surveyCategoryOwner);
   		  $surveyCategoryOwnerCellStr = '<td>'.$surveyCategoryOwner.'</td>';
   		  if($surveyCategoryOwner==''){
-  		  		$dropImgSrcStr = '';
+  		  		$dropCellStr = '<td></td>';
   		  }
 		  if($userId != $surveyCategoryOwnerId   && $surveyCategoryOwnerId != '' && !defined('debugSurveyCategories')){ //if this is not owned by 'me'...
 		   //deny access.
 		    $isAllowed = false;
 		    $classRow = 'grayText';
-		    $dropImgSrcStr = '';
+		    $dropCellStr = '<td></td>';
 		  }
 		  
 		}elseif($isCustomFacility==1){
 			
 			if(false == isSurveyCategoryStarted($userId,$facilityId,$isCustomFacility,$row['id']) ){  //if the surv cat is not started yet...
-  				$dropImgSrcStr = '';  //then its impossible to delete answers, so blank this out.
+  				$dropCellStr = '<td></td>';  //then its impossible to delete answers, so blank this out.
   				$surveyCategoryOwnerCellStr = '';
   			}else{
 				if($rowStatus==''){
@@ -97,13 +98,13 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 			throwMyExc($em);
 		}
 
-		if(defined('DEBUG')){
-		 $o .=  '<tr class="'.$classRow.'" id="'.$row['id'].'"><td class="drop"><img '.$dropImgSrcStr.' /></td><td class="cell1" id="'.$row['id'].'">'
-		      .$row['id'].''.'</td><td class="nameCell" id="'.$row['title'].'"><a class="unclickable" href="" >'.$row['title'].'</a></td><td>'.$rowStatus.'</td><td>'.$surveyCategoryOwner.'</td></tr>';
-		}else{
-		 $o .=  '<tr class="'.$classRow.'" id="'.$row['id'].'"><td class="drop"><img '.$dropImgSrcStr.' /></td><td class="nameCell" id="'.$row['title'].'"><a class="unclickable '. $classRow.'" href="" >'
+//		if(defined('DEBUG')){
+//		 $o .=  '<tr class="'.$classRow.'" id="'.$row['id'].'"><td class="drop"><img '.$dropImgSrcStr.' /></td><td class="cell1" id="'.$row['id'].'">'
+//		      .$row['id'].''.'</td><td class="nameCell" id="'.$row['title'].'"><a class="unclickable" href="" >'.$row['title'].'</a></td><td>'.$rowStatus.'</td><td>'.$surveyCategoryOwner.'</td></tr>';
+//		}else{
+		 $o .=  '<tr class="'.$classRow.'" id="'.$row['id'].'">'.$dropCellStr.'<td class="nameCell" id="'.$row['title'].'"><a class="unclickable '. $classRow.'" href="" >'
 		     .$row['title'].'</a></td><td>'.$rowStatus.'</td>'.$surveyCategoryOwnerCellStr .'</tr>';
-		}
+		 
 	}
 	
 	$scrDao = new surveyCategoryRowsDAO();
