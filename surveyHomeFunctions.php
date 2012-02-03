@@ -1,5 +1,13 @@
 <?php 
 require_once('activitiesSupplementalFunctions.php');
+require_once('DAO/myFacilitiesRowsDAO.php');
+require_once('DAO/myCustomFacilitiesRowsDAO.php');
+
+
+use urm\urm_secure\DAO\myFacilitiesRowsDAO;
+use urm\urm_secure\DAO\myCustomFacilitiesRowsDAO;
+
+
 
 /*
  * for each facility we see here, we must query all the surveycategories beneath it to see if they are complete or not.
@@ -23,18 +31,31 @@ where user.id = '".$userId."' ");           //check un/pw against db.
 		throwMyExc('getmyfacilitiesrowshtml_withstatus - mysql_num_rows failed');
 			}
 	if ($numrows == 0){
-		return "";
+		//return "";
 	}
 	$o = '';
+	$atLeastOneSurveyCategoryIsCompleteForAll = false;
+	$facilityCompleteCount=0;
+	$facilityPartiallyCompleteCount=0;
+	$facilityCount=0;
 	while($row = mysql_fetch_array($result))
 	{
 		$title = $row['title'];
 		if(!$title ||  trim($title==""))
 		  $title = "Unknown (error)";
-		if(isFacilityComplete($userId,$row['id'])){ //row[id] here is the userFacility's id, (which down in the details is the $fid where customFacility=0).
+		$facilityCompletionStatus = isFacilityComplete($userId,$row['id']);
+		if($facilityCompletionStatus == 'complete'){ //row[id] here is the userFacility's id, (which down in the details is the $fid where customFacility=0).
 			$rowStatus = '<img src="images/b_check.png"/>';
-		}else{
+			$facilityCompleteCount++; 
+		}elseif($facilityCompletionStatus == 'partiallyComplete'){
 			$rowStatus = '';
+			$facilityPartiallyCompleteCount++;
+			//$atLeastOneSurveyCategoryIsCompleteForAll = true;
+		}elseif($facilityCompletionStatus == 'noSurveyCategoriesComplete'){
+			$rowStatus = '';
+		}else{
+			$em='getmyfacilitiesrows - facil completion status invalid ';
+			throwMyExc($em);
 		}
 		if(defined('DEBUG')){
 		 $o .=  '<tr class="userFacilityRow clickable" id="'.$row['id'].'"><td class="cell1" id="'.$row['id'].'">'.$row['id'].''.'</td><td class="nameCell" id="'.$row['name'].'">'.$row['name'].'</td><td>'.$row['address'].'</td><td>'.$row['city'].
@@ -45,10 +66,42 @@ where user.id = '".$userId."' ");           //check un/pw against db.
 		 // class="facilityTypeId" id="'.$row['facilityTypeId'].'"
 		 
 		}
+		$facilityCount++;
 	}
-	return $o;
+	if($facilityCompleteCount + $facilityPartiallyCompleteCount == $facilityCount      && $facilityCount  != 0){ 
+	   $atLeastOneSurveyCategoryIsCompleteForAll=true;
+	}
+	
+	
+	$myFRDao = new myFacilitiesRowsDAO();
+	$myFRDao->o = $o;
+	
+	$myFRDao->atLeastOneSurveyCategoryIsCompleteForAll = $atLeastOneSurveyCategoryIsCompleteForAll;
+	
+	return $myFRDao;
+	
+	
+	
+	
+	
 	 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function getMyCustomFacilitiesRowsHtml_WithStatus($userId){
 	/*  first get list of custom facilities ids.  then, for each cf_id, query all surveyCatgories beneath it.
 	 *  we know this is only customfacilities not facilities.
@@ -60,25 +113,41 @@ function getMyCustomFacilitiesRowsHtml_WithStatus($userId){
 	left join facilityType on facilityType.id = customFacility.facilityTypeId 
 	where userid = ".$userId." ");           //check un/pw against db.
 	if($result == FALSE){
-		return " ";
+		$em='getmycustomfacilitiesrowshtml_withstatus:  query fail result';
+		throwMyExc($em);
 	}
 	$numrows = mysql_num_rows($result);
-	if(!$numrows){
-		return " ";
+	if($numrows===false){
+		$em='getmycustomfacilitiesrowshtml_withstatus:  numrows was false';
+		throwMyExc($em);
 	}
 	if ($numrows == 0){
-		return " ";
+		//return " ";
 	}
 	$o = '';
+	$facilityCompleteCount=0;
+	$facilityPartiallyCompleteCount=0;
+	$facilityCount=0;	
+	$atLeastOneSurveyCategoryIsCompleteForAll = false;
 	while($row = mysql_fetch_array($result))
 	{
 		$title = $row['title'];
 		if(!$title ||  trim($title==""))
 		  $title = "UNK";
-		if(isCustomFacilityComplete($userId,$row['id'])){
+		$facilityCompletionStatus = isCustomFacilityComplete($userId,$row['id']);
+		  
+		if($facilityCompletionStatus == "complete" ){
 			$rowStatus = '<img src="images/b_check.png"/>';
-		}else{
+			$facilityCompleteCount++;
+		}elseif($facilityCompletionStatus == "partiallyComplete"){
 			$rowStatus = '';
+			$facilityPartiallyCompleteCount++;
+		}elseif($facilityCompletionStatus == "noSurveyCategoriesComplete"){
+			$rowStatus = '';
+		}else{
+			$em='getmycustomfacilitiesrows - facil completion status invalid ';
+			throwMyExc($em);
+			
 		}
 		if(defined('DEBUG')){
 		 $o .=  '<tr class="customFacilityRow" id="'.$row['id'].'"><td class="cell1" id="'.$row['id'].'">'.$row['id'].''.'</td><td class="nameCell" id="'.$row['name'].'">'.$row['name'].'</td><td>'.$row['address'].'</td><td>'.$row['city'].
@@ -87,7 +156,17 @@ function getMyCustomFacilitiesRowsHtml_WithStatus($userId){
 		 $o .=  '<tr class="customFacilityRow" id="'.$row['id'].'"><td class="nameCell" id="'.$row['name'].'">'.$row['name'].'</td><td>'.$row['address'].'</td><td>'.$row['city'].
   		           '</td><td>'.$row['state'].'</td><td>'.$row['zip'].'</td><td class="facilityTypeId" id="'.$row['facilityTypeId'].'">'.$title.'</td><td>'.$rowStatus.'</td></tr>';
 		}
+		$facilityCount++;
 	}
-	return $o;
+	if($facilityCompleteCount + $facilityPartiallyCompleteCount == $facilityCount){ 
+	   $atLeastOneSurveyCategoryIsCompleteForAll=true;
+	}
+	
+	$myFRDao = new myCustomFacilitiesRowsDAO();
+	$myFRDao->o = $o;
+	$myFRDao->atLeastOneSurveyCategoryIsCompleteForAll = $atLeastOneSurveyCategoryIsCompleteForAll;
+	
+	return $myFRDao;
+	
 
 }

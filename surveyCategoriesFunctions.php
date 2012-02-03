@@ -1,6 +1,11 @@
 <?php
 
 require_once('activitiesSupplementalFunctions.php');
+require_once('DAO/surveyCategoryRowsDAO.php');
+
+use urm\urm_secure\DAO\surveyCategoryRowsDAO;
+
+
 
 //input: username
 //output:  all the survey categories.
@@ -42,6 +47,7 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 		return " ";
 	}
 	$o = '';
+	$atLeastOneSurveyCategoryIsComplete=false;
 	while($row = mysql_fetch_array($result))
 	{
 		$title = $row['title'];
@@ -49,7 +55,7 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 		  $title = "UNK";
 		if(isSurveyCategoryComplete($userId,$facilityId, $isCustomFacility, $row['id'])){    // iscustomactivity (1 and 0 both will be checked.    row[id]: surveycategoryid.  
 		  $rowStatus = '<img src="images/b_check.png"/>';
-		  
+		  $atLeastOneSurveyCategoryIsComplete=true;
 		}else{
  		  $rowStatus = '';//blank
 		}
@@ -99,8 +105,15 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 		     .$row['title'].'</a></td><td>'.$rowStatus.'</td>'.$surveyCategoryOwnerCellStr .'</tr>';
 		}
 	}
-	return $o;
-	 
+	
+	$scrDao = new surveyCategoryRowsDAO();
+	$scrDao->o = $o;
+	$scrDao->atLeastOneSurveyCategoryIsComplete = $atLeastOneSurveyCategoryIsComplete;
+	
+	return $scrDao;
+	
+	
+	
 }
 
 /* Drops all answers for this user in this survey category.

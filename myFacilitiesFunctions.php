@@ -10,11 +10,12 @@ function getMyFacilitiesRowsHtml($userId){
 	 */
 	$userId = cleanStrForDb($userId);
 	
-	$result = mysql_queryCustom("select userFacility.id AS id, facility.name, facility.address, facility.city, facility.state, facility.zip, facilityType.id AS facilityTypeId, facilityType.title from user
-join userFacility on user.id = userFacility.userid
-left join facilityType on facilityType.id = userFacility.facilityTypeId
-join facility on userFacility.facilityId = facility.id
-where user.id = '".$userId."' ");           //check un/pw against db.
+	$result = mysql_queryCustom("select userFacility.id AS id, facility.name, facility.address, facility.city, facility.state, 
+	facility.zip, facilityType.id AS facilityTypeId, facilityType.myOrder AS myOrder, facilityType.title from user
+	join userFacility on user.id = userFacility.userid
+	left join facilityType on facilityType.id = userFacility.facilityTypeId
+	join facility on userFacility.facilityId = facility.id
+	where user.id = '".$userId."' ");           //check un/pw against db.
 	if($result === FALSE){
 		throwMyExc('getMyFacilitiesRowsHtml: query failed');
 	}
@@ -35,21 +36,25 @@ where user.id = '".$userId."' ");           //check un/pw against db.
 		$facilityTypeIdClass = '';
 		$linkGrayClass = 'transparent';
 		$editCell = '<td class="transparent"><img src="images/b_edit.png"/></td>';
-		if($row['facilityTypeId']!=6  &&   $row['facilityTypeId']!=9){
+		if($row['myOrder'] > 0){          //$row['facilityTypeId']!=6  &&   $row['facilityTypeId']!=9
 		  $userFacilityRowClass = 'userFacilityRow';
 		  $facilityTypeIdClass='facilityTypeId';
 		  $linkGrayClass = '';
 		  $editCell = '<td ><img class="editFacility" src="images/b_edit.png"/></td>';
+		}
+		if($row['myOrder'] == 0){
+			$userFacilityRowClass = 'userFacilityRow';
+			$editCell = '<td ><img class="editFacility" src="images/b_edit.png"/></td>';
 		}  
 		$dropCell = ''; //<td ><img class="editFacility" src="images/b_drop.png"/></td>';
 
-		if(defined('DEBUG')){
-		$o .=  '<tr class="'.$userFacilityRowClass.'" id="'.$row['id'].'" >'.$dropCell.$editCell.'<td>'.$row['id'].'</td><td class="nameCell" id="'.$row['name'].'">'.$row['name'].'</td><td>'.$row['address'].'</td><td>'.$row['city'].
-  		           '</td><td>'.$row['state'].'</td><td>'.$row['zip'].'</td><td class="'.$facilityTypeIdClass.'" id="'.$row['facilityTypeId'].'"><a class="unclickable '.$linkGrayClass.'" href="" >'.$title.'</a></td><td class="facilityTypeId" id="'.$row['facilityTypeId'].'" >'.$row['facilityTypeId'].'</td></tr>';
-		}else{
+//		if(defined('DEBUG')){
+//		$o .=  '<tr class="'.$userFacilityRowClass.'" id="'.$row['id'].'" >'.$dropCell.$editCell.'<td>'.$row['id'].'</td><td class="nameCell" id="'.$row['name'].'">'.$row['name'].'</td><td>'.$row['address'].'</td><td>'.$row['city'].
+//  		           '</td><td>'.$row['state'].'</td><td>'.$row['zip'].'</td><td class="'.$facilityTypeIdClass.'" id="'.$row['facilityTypeId'].'"><a class="unclickable '.$linkGrayClass.'" href="" >'.$title.'</a></td><td class="facilityTypeId" id="'.$row['facilityTypeId'].'" >'.$row['facilityTypeId'].'</td></tr>';
+//		}else{
 		$o .=  '<tr class="'.$userFacilityRowClass.'" id="'.$row['id'].'" >'.$dropCell.$editCell.'<td class="nameCell" id="'.$row['name'].'">'.$row['name'].'</td><td>'.$row['address'].'</td><td>'.$row['city'].
   		           '</td><td>'.$row['state'].'</td><td>'.$row['zip'].'</td><td class="'.$facilityTypeIdClass.'" id="'.$row['facilityTypeId'].'"><a class="unclickable '.$linkGrayClass.'" href="" >'.$title.'</a></td></tr>';
-		}
+		
 	}
 	return $o;
 }

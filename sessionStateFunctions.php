@@ -58,8 +58,7 @@
   	if($r===false){
   		return -1;
   	    $errorMsg = "error: savepostandsessionvars:  update query threw a false result";
-  	    $_SESSION['errorMsg'] = $errorMsg;
-        header('Location: errorPage.php');
+  	    throwMyExc($errorMsg);
   	}
   
   	if(defined('DEBUG')){
@@ -125,9 +124,7 @@
   	  if(!is_array($sess)){
   	  	return;
   	    $errorMsg='sess not an array';
-  	    $_SESSION['errorMsg'] = $errorMsg;
-		header('Location: errorPage.php');
-		exit();
+  	    throwMyExc($errorMsg);
   	  }
   	  foreach($sess as $v){
 //  	  	echo '<br/>pulling out of sess arr: '.$v;
@@ -135,16 +132,12 @@
   	  	if(!isset($t[0])) {
   	  	  //return;
   	  	  $errorMsg='sess loop: t 0 not set';
-  	  	  $_SESSION['errorMsg'] = $errorMsg;
-		  header('Location: errorPage.php');
-		  exit();
+  	  	  throwMyExc_nonCritical($errorMsg);
   	  	}
   	  	if(!isset($t[1])) {
   	  	  $t[1] = ''; 
-  	  	  $errorMsg='sess loop: t 1 not set';
-  	  	  $_SESSION['errorMsg'] = $errorMsg;
-		  header('Location: errorPage.php');
-		  exit();
+  	  	  $errorMsg='sess loop: t 1 not set';               //-------------------------------  THIS IS FIRING. WHY?? AT LOGIN TO HOME PAGE.
+  	  	  throwMyExc_nonCritical($errorMsg);
   	  	}
   	  	$_SESSION[$t[0]] = $t[1];
   	  	if(defined('DEBUG')){
@@ -157,18 +150,14 @@
   	}else{
   		//return;
   	    $errorMsg='error: loadstate: session was not set from getpostandsessionvarsfromdb!';
-  	    $_SESSION['errorMsg'] = $errorMsg;
-		header('Location: errorPage.php');
-		exit();
+  	    throwMyExc_nonCritical($errorMsg);
   	}
     if(isset($ret->post)){
       $post = $ret->post;
       if(!is_array($post)){  
 		//return;
         $errorMsg = 'post not an array';
-        $_SESSION['errorMsg'] = $errorMsg;
-		header('Location: errorPage.php');
-		exit(); 
+        throwMyExc_nonCritical($errorMsg); 
       }
       foreach($post as $v){
 //      	echo '<br/>pulling out of post arr: '.$v;
@@ -176,16 +165,12 @@
   	  	if(!isset($t[0])){
   	  	 //return;
   	  	 $errorMsg='post loop: t 0 not set';
-  	  	 $_SESSION['errorMsg'] = $errorMsg;
-		 header('Location: errorPage.php');
-		 exit();
+  	  	 throwMyExc_nonCritical($errorMsg);
   	  	}
   	  	if(!isset($t[1])){
   	  	  //return;
   	  	  $errorMsg='post loop: t 1 not set';
-  	  	  $_SESSION['errorMsg'] = $errorMsg;
-		  header('Location: errorPage.php');
-		  exit();
+  	  	  throwMyExc_nonCritical($errorMsg);
   	  	}
   	  	$_SESSION[$t[0]] = $t[1];
   	  	if(defined('DEBUG')){
@@ -195,9 +180,7 @@
     }else{
         //return;
         $errorMsg='error: loadstate: post was not set from getpostandsessionarsfromdb!';
-        $_SESSION['errorMsg'] = $errorMsg;
-	    header('Location: errorPage.php');
-		exit();	
+        throwMyExc_nonCritical($errorMsg);
     }
     if(isset($ret->pageTitle)){
       $pageTitle = $ret->pageTitle;
@@ -207,9 +190,7 @@
       	if(!isValidPage($pageTitle)){
       		$errorMsg .= 'page not valid!: '.$pageTitle.', ';
       	}
-      	$_SESSION['errorMsg'] = $errorMsg;
-		header('Location: errorPage.php');
-		exit();
+      	throwMyExc_nonCritical($errorMsg);
       }
       else if($pageTitle=="home.php"){
         if(defined('DEBUG')){
@@ -227,11 +208,9 @@
        	exit();
       }
     }else{
-    	//header('Location: home.php');
+    	 
     	$errorMsg=' loadstate: pagetitle was not set';
-    	$_SESSION['errorMsg'] = $errorMsg;
-		header('Location: errorPage.php');
-		exit();
+    	throwMyExc_nonCritical($errorMsg);
     	
     	
     	

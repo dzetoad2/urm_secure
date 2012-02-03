@@ -69,9 +69,9 @@ function getActivityRowsHtml($userId, $facilityId, $isCustomFacility, $isCustomA
 		  $rowStatus = '';//blank
 		}
 		if(defined('DEBUG')){
-		 $o .=  '<tr class="activityRow" id="'.$row['id'].'"> <td class="cell1" id="'.$row['id'].'">'.$row['id'].''.'</td><td >'.$row['idNum'].''.'</td><td class="nameCell clickable" id="'.$row['title'].'">'.$row['title'].'</td><td>'.$rowStatus.'</td></tr>';
+		 //$o .=  '<tr class="activityRow" id="'.$row['id'].'"> <td class="cell1" id="'.$row['id'].'">'.$row['id'].''.'</td><td >'.$row['idNum'].''.'</td><td class="nameCell clickable" id="'.$row['title'].'">'.$row['title'].'</td><td>'.$rowStatus.'</td></tr>';
 		}else{
-		 $o .=  '<tr class="activityRow" id="'.$row['id'].'"><td >'.$row['idNum'].''.'</td><td class="nameCell clickable" id="'.$row['title'].'"><a class="unclickable" href="" >'.$row['title'].'</a></td><td>'.$rowStatus.'</td></tr>';
+		 $o .=  '<tr class="activityRow" id="'.$row['id'].'"><td >'.$row['idNum'].''.'</td><td class="  nameCell  clickable    " id="'.$row['title'].'"><a class="unclickable" href="" >'.$row['title'].'</a></td><td>'.$rowStatus.'</td></tr>';
 		}
 	}
 	return $o;

@@ -331,6 +331,11 @@ function isCustomActivitiesComplete($userId, $facilityId, $isCustomFacility, $su
 
 }
 
+/*  3 string outcomes:
+ *    complete
+ *    partiallyComplete
+ *    noSurveyCategoriesComplete
+ */
 function isFacilityComplete($userId, $fid){
  //loop through survey categories, getting their ids. then, using the userid and fid, and customFac is 0,
  //get whether...
@@ -346,14 +351,34 @@ function isFacilityComplete($userId, $fid){
 		throwMyExc($errorMsg);
 		
 	}
+	$countComplete = 0;
+	$count=0;
 	while($row = mysql_fetch_array($result)){  //loop thru the activity category ids.
 		$surveyCategoryId = $row['id'];
-		if(!isSurveyCategoryComplete($userId, $fid, 0,   $surveyCategoryId)){
-			return false;
+		if(isSurveyCategoryComplete($userId, $fid, 0,   $surveyCategoryId)){
+			$countComplete++;
+		}else{
 		}
+		$count++;
 	}
-	return true;
+	if($countComplete == $count){
+		return "complete"; //all are complete
+	}elseif($countComplete == 0){
+		return "noSurveyCategoriesComplete";  //0 complete
+	}elseif($countComplete > 0 && $countComplete < $count){
+		return "partiallyComplete";  //partial complete
+	}else{
+		$em='isfacilitycomplete: error , countcomplete is not in valid range.';
+		throwMyExc($em);
+	}
+	
+
+	
+	
+	
 }
+ 
+
 function isCustomFacilityComplete($userId, $fid){
  //loop through survey categories, getting their ids. then, using the userid and fid, and customFac is 1,
  //get whether...
@@ -368,12 +393,25 @@ function isCustomFacilityComplete($userId, $fid){
 		throwMyExc($errorMsg);
 		
 	}
+	$count=0;
+	$countComplete=0;
 	while($row = mysql_fetch_array($result)){  //loop thru the activity category ids.
 		$surveyCategoryId = $row['id'];
-		if(!isSurveyCategoryComplete($userId, $fid, 1,   $surveyCategoryId)){
-			return false;
+		if(isSurveyCategoryComplete($userId, $fid, 1,   $surveyCategoryId)){
+			$countComplete++;
 		}
+		$count++;
 	}
-	return true;
+	if($countComplete == $count){
+		return "complete"; //all are complete
+	}elseif($countComplete == 0){
+		return "noSurveyCategoriesComplete";  //0 complete
+	}elseif($countComplete > 0 && $countComplete < $count){
+		return "partiallyComplete";  //partial complete
+	}else{
+		$em='iscustomfacilitycomplete: error , countcomplete is not in valid range.';
+		throwMyExc($em);
+	}
+
 }
 

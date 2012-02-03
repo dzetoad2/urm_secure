@@ -11,17 +11,12 @@ $conn = mysql_connect("localhost","myroot","f");
 if($conn===FALSE) 
 {
 	$errorMsg="Database connection failed. Check name/pw.";
-	die($errorMsg);
-//	$_SESSION['errorMsg'] = $errorMsg;
-//	header('Location: errorPage.php');
-//  	exit();
+	throwMyExc($errorMsg);
 }
 if(FALSE===mysql_select_db("urm")){
  	$errorMsg="select fail of database - db name needs to be 'urm'";
- 	$die($errorMsg);
-// 	$_SESSION['errorMsg'] = $errorMsg;
-//	header('Location: errorPage.php');
-//  	exit();
+ 	throwMyExc($errorMsg);
+ 
 }
 
 function createAuthToken($username){  // this will be a function based on username and a random salt. 
@@ -189,6 +184,40 @@ function throwMyExc($em){
 	 3:  email
 	 */
 }
+function throwMyExc_nonCritical($em){
+	
+  try{
+     	if(trim(mysql_error())!=''){
+     	 $mysqlErr = ', mysql_error: '. mysql_error();
+     	}else{
+     	 $mysqlErr = '';	
+     	}
+	    $em_full = $em . $mysqlErr;
+     	throw new Exception($em_full);
+     	
+     }catch(Exception $e){
+     	$un='';
+     	$uid='';
+     	if(isset($_SESSION['username'])){
+     		$un = 'username: ' . $_SESSION['username'];
+     	}
+     	if(isset($_SESSION['userid'])){
+     		$uid ='userid: ' . $_SESSION['userid'];
+     	}
+     	
+	 	$msg = $e->getMessage();
+	 	$code = $e->getCode();
+	 	$file = $e->getFile();
+	 	$line = $e->getLine();
+	 	$trace = $e->getTraceAsString();
+	 	error_log('<WARNING>'.$un.', '.$uid.  ', msg: '.$msg.', file: '.$file.', line: '.$line.', trace: '.$trace.'</WARNING>');
+     }
+	header('Location: home.php');
+	exit();
+}
+
+
+
 function cleanDocString($s){
   $s = convert_smart_quotes($s);
   $s =  ($s);

@@ -1,6 +1,7 @@
 <?php
  require_once('activitiesSupplementalFunctions.php');
  require_once('DAO/activityCategoryDocDAO.php');
+ require_once('activityFunctions.php');
  
  use urm\urm_secure\DAO\activityCategoryDocDAO;
  
@@ -35,7 +36,7 @@ function getActivityCategoriesRowsHtml($userId, $facilityId, $isCustomFacility, 
 			}else{
 			  $rowStatus = '';//blank
 			}
-		  $o.= '<tr class="activityCategoryDocRow clickable" id="'.$acDocDAO->id.'" ><td class="" >'.$acDocDAO->idNum.'</td><td class="bold">'.$acDocDAO->title.'</td><td>'.$rowStatus.'</td></tr>'; 
+		  $o.= '<tr class="activityCategoryDocRow clickable overGreen" id="'.$acDocDAO->id.'" ><td class="" >'.$acDocDAO->idNum.'</td><td class="bold">'.$acDocDAO->title.'</td><td>'.$rowStatus.'</td></tr>'; 
 		}else{
 		  $o.= getActivityCategoryGroupRows($userId, $facilityId, $isCustomFacility, $surveyCategoryId, $acDocDAO->id);
 		}
@@ -77,10 +78,10 @@ function getActivityCategoryGroupRows($userId, $facilityId, $isCustomFacility, $
 				  $rowStatus = '';//blank
 				}
 				if(defined('DEBUG')){
-				  $o .=  '<tr class="activityCategoryRow clickable" id="'.$row['id'].'"><td   >'.$row['idNum'].'</td><td class="cell1" id="'.$row['id'].'">'.$row['id'].''.'</td><td class="nameCell" id="'.$row['title'].'">'.$row['title'].'</td><td>'.$rowStatus.'</td></tr>';
+				  //$o .=  '<tr class="activityCategoryRow clickable" id="'.$row['id'].'"><td   >'.$row['idNum'].'</td><td class="cell1" id="'.$row['id'].'">'.$row['id'].''.'</td><td class="nameCell" id="'.$row['title'].'">'.$row['title'].'</td><td>'.$rowStatus.'</td></tr>';
 				}
 				else{
-				  $o .=  '<tr class="activityCategoryRow clickable" id="'.$row['id'].'"><td   >'.$row['idNum'].'</td><td class="nameCell" id="'.$row['title'].'">'.$row['title'].'</td><td>'.$rowStatus.'</td></tr>';
+				  $o .=  '<tr class="activityCategoryRow clickable overGreen" id="'.$row['id'].'"><td   >'.$row['idNum'].'</td><td class="nameCell" id="'.$row['title'].'">'.$row['title'].'</td><td>'.$rowStatus.'</td></tr>';
 						}
 			}
 			return $o;
@@ -206,42 +207,186 @@ function getCustomActivityRowsHtml($userId, $facilityId, $isCustomFacility, $isC
 		$title = $row['title'];
 		if(!$title ||  trim($title==""))
 		$title = "UNK";
+		$dropActivityImgStr = '<img class="dropActivity clickable" src="images/b_drop.png"/>';
+		
 		if(isActivityAnswered($userId,$facilityId,$row['id'], $isCustomFacility,1)){    //row[id] refers to the id of customActivity.
-		  $rowStatus = '<img src="images/b_check.png"/>';
+		  $rowStatus = '<img class="" src="images/b_check.png"/>';
+		  $dropActivityAnswerImgStr = '<img class="dropActivityAnswer clickable" src="images/b_drop.png"/>';
+		  
 		}else{
 		  $rowStatus = '';//blank
+		  $dropActivityAnswerImgStr = '';
 		}
-		if(defined('DEBUG')){
-		 $o .=  '<tr class="customActivityRow clickable" id="'.$row['id'].'""><td><img class="edit" src="images/b_edit.png"/></td><td><img class="drop" src="images/b_drop.png"/></td><td class="cell1" id="'.$row['id'].'">'.$row['id'].''.'</td><td class="nameCell" id="'.$row['title'].'">'.$row['title'].'</td><td>'.$rowStatus .'</td></tr>';
-		}else{
-		 $o .=  '<tr class="customActivityRow clickable" id="'.$row['id'].'""><td><img class="edit" src="images/b_edit.png"/></td><td><img class="drop" src="images/b_drop.png"/></td><td class="nameCell clickable" id="'.$row['title'].'">'.$row['title'].'</td><td>'.$rowStatus .'</td></tr>';
-		}
+		  					//if(defined('DEBUG')){
+		 //$o .=  '<tr class="customActivityRow clickable" id="'.$row['id'].'""><td><img class="edit" src="images/b_edit.png"/></td><td><img class="drop" src="images/b_drop.png"/></td><td class="cell1" id="'.$row['id'].'">'.$row['id'].''.'</td><td class="nameCell" id="'.$row['title'].'">'.$row['title'].'</td><td>'.$rowStatus .'</td></tr>';
+	 
+		 $o .=  '<tr class="customActivityRow   overGreen      " id="'.$row["id"].'" ><td class="" ><img class="edit clickable" src="images/b_edit.png"/></td><td>'.$dropActivityImgStr.'</td><td>'.$dropActivityAnswerImgStr.'</td><td class="nameCell clickable" id="'.$row['title'].'"><a class="unclickable" href="#"   >'.$row['title'].'  </a>  </td><td>'.$rowStatus .'</td></tr>';
+		 
 		
 		
 	}
 	return $o;
 	 
 }
+//function deleteCustomActivity_original($userId, $customActivityId){
+//	
+//	
+//	$customActivityId = cleanStrForDb($customActivityId);
+//	$userId = cleanStrForDb($userId);
+//	$r1 = mysql_queryCustom("  delete from customActivity where id = ".$customActivityId."");  
+////	$r = mysql_affected_rows();
+//	$r2 = mysql_queryCustom("  delete from surveyAnswer where userId = ".$userId." and isCustomActivity=1 and activityId=".$customActivityId."");
+//	$o = array();
+//	$o['hasError'] = true; 
+//	if($r1 === TRUE && $r2 === TRUE){
+//		 $o['msg'] = "User Created activity successfully deleted (including its related survey answers)";
+//		 $o['hasError'] = false;
+//		 return $o;
+//	}else if($r1 === TRUE && $r2 === false){
+//		$o['msg'] = "User Created activity successfully deleted (but failure deleting its related survey answers)";
+//		return $o;
+//	}else if($r1===false && $r2 === true){
+//		$o['msg']= "Failed to delete user created activity but successfully deleted its related survey answers";
+//		return $o;
+//	}else{
+//		$o['msg']= "Failure to delete user created activity, failure to delete its related survey answers";
+//		return $o;
+//	}
+//}
 function deleteCustomActivity($userId, $customActivityId){
+//	die('customactivityid is : '.$customActivityId);
+	
 	$customActivityId = cleanStrForDb($customActivityId);
 	$userId = cleanStrForDb($userId);
-	$r1 = mysql_queryCustom("  delete from customActivity where id = ".$customActivityId."");  
-//	$r = mysql_affected_rows();
-	$r2 = mysql_queryCustom("  delete from surveyAnswer where userId = ".$userId." and isCustomActivity=1 and activityId=".$customActivityId."");
-	$o = array(); 
+	$o = array();
 	$o['hasError'] = true; 
-	if($r1 === TRUE && $r2 === TRUE){
-		 $o['msg'] = "User Created activity successfully deleted (including its related survey answers)";
-		 $o['hasError'] = false;
-		 return $o;
-	}else if($r1 === TRUE && $r2 === false){
-		$o['msg'] = "User Created activity successfully deleted (but failure deleting its related survey answers)";
-		return $o;
-	}else if($r1===false && $r2 === true){
-		$o['msg']= "Failed to delete user created activity but successfully deleted its related survey answers";
-		return $o;
-	}else{
-		$o['msg']= "Failure to delete user created activity, failure to delete its related survey answers";
+	
+	//1. Are there any survey answers for this customactivity? if so, stop! return an error msg! 
+	$q1="  select * from surveyAnswer where userId = ".$userId." and isCustomActivity=1 and activityId=".$customActivityId;
+	$r1 = mysql_queryCustom($q1);
+	if($r1===false){
+		$em='deletecustomactivity: r1 query fail, q1: '.$q1;
+		throwMyExc($em);
+	}
+	$numrows = mysql_num_rows($r1);
+	if($numrows>0){
+		//none! so stop, return error msg! (not an Exception)
+		$o['msg'] = 'There were '. $numrows .' total survey answer(s) found for this User Created Activity - please delete the corresponding answer for each facility first';
 		return $o;
 	}
+	//Ok, so numrows is 0, now go ahead and delete the customActivity.
+	$q2 = "delete from customActivity where id = ".$customActivityId;
+    $r2 = mysql_queryCustom($q2);  
+    if($r2===false){
+    	$em='deletecustomactivity: query fail $r2, q2: '.$q2;
+    	throwMyExc($em);
+    }
+	
+    $affected_rows = mysql_affected_rows();
+    
+	if($affected_rows == 1){
+		 $o['msg'] = "User Created activity successfully deleted";
+		 $o['hasError'] = false;
+		 return $o;
+	}else{
+		$em='deletecustomactivity: affected rows not 1: affected_rows='.$affected_rows.', error!';
+		throwMyExc($em);
+	}
+}
+function deleteCustomActivityAnswer($userId, $fid, $is_cf, $customActivityId){
+	// we delete just one specific answer so we need:
+	/*
+	 *  userid, facilityId, iscustomfacility,   iscustomactiivty=1 we know,  activityid we konw, 
+	 */
+	$q1 = "  delete from surveyAnswer where userId = ".$userId."
+	      and  facilityId = ".$fid." 
+	      and  activityId=".$customActivityId." 
+	      and  isCustomFacility = ".$is_cf." 
+	      and  isCustomActivity=1  ";
+	
+	$r1 = mysql_queryCustom($q1);
+	if($r1===false){
+		$em='deletecustomactivityanswer: r1 fail, q1: '.$q1;
+		throwMyExc($em);
+	}
+	$affected_rows = mysql_affected_rows();
+	if($affected_rows == 1){
+		//success:  deleted exactly 1 survey answer!
+		$o['msg'] = "Survey Answer (for this facility) for this User Created Activity successfully deleted";
+		$o['hasError'] = false;
+		 return $o;
+	}elseif($affected_rows == 0){
+		$o['msg'] = "No Survey Answer available to delete";
+		$o['hasError'] = true;
+		 return $o;
+		
+	}else{
+		$em='deletecustomactivityanswer: affectedrows not 1 and not 0, so someother num of answers deleted? aff-rows: '.$affected_rows;
+		throwMyExc($em);
+	}
+	
+	
+}
+
+
+
+function fillOutThisSurveyCategory($userId, $facilityId,  $isCustomFacility, $surveyCategoryId ){
+	 
+	 
+		//get all activity categories for this survey category
+		$q1 = 'select id from activityCategory where surveyCategoryId = '.$surveyCategoryId;
+		$r1 = mysql_query($q1);
+		$activityCategoriesIds=array();
+		$activityIds = array();
+		while($row=mysql_fetch_array($r1)){
+			//print_r($row);
+			$activityCategoriesIds[] = $row['id'];
+		}
+		
+		foreach($activityCategoriesIds as $ac_id){
+			$q2 = 'select * from activity where activityCategoryId = '.$ac_id;
+			$r2 = mysql_query($q2);
+			if($r2===false)die('r2 false!');
+			
+			while($row = mysql_fetch_array($r2)){
+//				echo $row['title'] .'<br/>';
+				$activityIds[] = $row['id'];
+			}
+		}
+		//activityIds are now filled out. for each one, enter survey answer of skip.
+		foreach($activityIds as $aid){
+			 $_fid = $facilityId;
+			 $_aid = $aid;
+			 $_is_cf = $isCustomFacility;
+			 $_is_ca = 0;
+			 $_isPerformedAdult = 'no';
+			 $_isPerformedPediatric = 'no';
+			 $_isPerformedNatal = 'no';
+			 $_hasTimestandardAdult = 'na';
+			 $_hasTimestandardPediatric = 'na';
+			 $_hasTimestandardNatal = 'na';
+			 $_durationAdult = -1;
+			 $_durationPediatric = -1;
+			 $_durationNatal = -1;
+			 $_volumeAdult = -1;
+			 $_volumePediatric = -1;
+			 $_volumeNatal = -1;
+			 $_methodologyAdult = -1;
+			 $_methodologyPediatric = -1; 
+			 $_methodologyNatal = -1;
+			 if(!($r = submitSurveyAnswer($userId, $_fid,$_aid,$_is_cf,$_is_ca,$_isPerformedAdult,$_isPerformedPediatric,$_isPerformedNatal,
+ 					 $_hasTimestandardAdult,$_hasTimestandardPediatric,$_hasTimestandardNatal,$_durationAdult,$_durationPediatric,
+ 					 $_durationNatal,$_volumeAdult,$_volumePediatric,$_volumeNatal,$_methodologyAdult,
+ 					 $_methodologyPediatric,$_methodologyNatal))){
+    		   $errorMsg = "Error: Submission of survey data encountered an error<br/>";
+    		   //throwMyExc($errorMsg);
+    		   die($errorMsg);
+ 			 }
+		}
+		
+		 
+	
+	
+	
+	
 }

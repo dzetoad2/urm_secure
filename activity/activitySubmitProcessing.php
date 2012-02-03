@@ -177,14 +177,12 @@ if($_isPerformedNatal=="na"){
 //      $test=false;
     // ('debug: ownerid: '.$ownerId.', userId: '.$userId.'<br/>'.'($userId != $ownerId)  &&  ($ownerId != blank)  is : '.$test);
       if(       ($userId != $ownerId)  &&  ($ownerId != '')      ){  //ownerid is blank if this is a custom facility (anyone can answer survey q's for those).
-        $_SESSION['errorMsg'] = 'It is forbidden to answer survey questions of a survey owned by someone else (for same facility in database)';
-        header('Location: errorPage.php');
-	    exit();
+        $em = 'It is forbidden to answer survey questions of a survey owned by someone else (for same facility in database)';
+        throwMyExc($em);
       }
     }catch (Exception $e){
-        $_SESSION['errorMsg'] = $e->getMessage();
-        header('Location: errorPage.php');
-        exit();
+        $em = $e->getMessage();
+        throwMyExc($em);
     }
     if(!($r = submitSurveyAnswer($userId, $_fid,$_aid,$_is_cf,$_is_ca,$_isPerformedAdult,$_isPerformedPediatric,$_isPerformedNatal,
  					 $_hasTimestandardAdult,$_hasTimestandardPediatric,$_hasTimestandardNatal,$_durationAdult,$_durationPediatric,
@@ -205,7 +203,8 @@ if($_isPerformedNatal=="na"){
  	    try{
  	      if(isset($activityCategoryId)){	
  	      	if(isset($activityCategoryDocId)){
- 	      		die('both act cat id and act cat docid were set! not allowed, it is a bug.');
+ 	      		$em = 'both act cat id and act cat docid were set! not allowed, it is a bug.';
+ 	      		throwMyExc($em);
  	      	}
  	      	//die ('act-cat-id was set!');
  	      }
@@ -213,27 +212,13 @@ if($_isPerformedNatal=="na"){
  	      if(!isset($activityCategoryId)){
  	      	//not set? then fetch it using the activityId we have.
  	      	$activityCategoryId = getActivityCategoryIdFromActivityId($activityId);
- 	      	//die('activcatid was not set, so we got it, it is: '.$activityCategoryId);
- 	      	
- 	      	
- 	      	
- 	      	
- 	      	
  	      	
  	      }
  	      
 	      if(!isActivityCategoryComplete($userId, $_fid, $activityCategoryId, $is_cf)){  
 	    	  //just the activity category is not complete, so stay within it and get another activity to do.
 	    	  $_SESSION['activityId'] = getNextActivityId_FromOwnAC($userId, $_fid, $activityCategoryId, $is_cf,0); //is_ca is 0, last param.
-//	    	  if($aid > 0){
-//	    	  $aid = $_SESSION['activityId'];
-//	    	  }
-				//die('activ categ not complete, about to loop to same activity.php page');
-				
-				
-				
-				
-			  
+ 
 	          header('Location: activity.php');
 	          exit();
 	      }elseif(     isActivityCategoryComplete($userId, $_fid, $activityCategoryId, $is_cf) && 
@@ -246,8 +231,8 @@ if($_isPerformedNatal=="na"){
 	        header('Location: activity.php');
 	          exit();
 	      }else {
-		    //else all activities in *all groups* done - so just go up to the activites page.
-	       header('Location: activityCategories.php'); //was activities.php
+		    //else all activities in *all groups* done - so just go up to the activities page.
+	       header('Location: activityCategories.php#activityCategories'); //was activities.php
 	       exit();
 	      }
 	    }catch(Exception $e){
@@ -257,13 +242,12 @@ if($_isPerformedNatal=="na"){
 	  }
 	  else if(isset($customActivityId)){
      	    //this is naturally where it returns after the customactivity is answered, as that is where they are created/edited - in activitycategories.
-	  		header('Location: activityCategories.php');
+	  		header('Location: activityCategories.php#activityCategories');
      	    exit();
 	  }
 	  else{
-	  	$_SESSION['errorMsg'] = "End of successful submit : neither activityid nor customactivityid were set, so cannot auto redirect. Please contact administrator";
-	  	header('Location: errorPage.php');
-	  	exit();
+	  	$em  = "activitysubmitprocessing page: End of successful submit : neither activityid nor customactivityid were set, so cannot auto redirect. Please contact administrator";
+	  	throwMyExc($em);
 	  }
 	  		  
     }

@@ -228,21 +228,22 @@ function getMyCustomFacilitiesRowsHtml($userId){
 		  $title = "UNK";
 		}
 		$customFacilityTypeIdClass = 'transparent';
-		$linkTransparentClass='';
+		$typeLink = $title;
 		$facilityTypeId = $row['facilityTypeId'];
 		if($facilityTypeId != 9){
+			//type is clickable.
 		  $customFacilityTypeIdClass = 'customFacilityTypeId';
-		  $linkTransparentClass='';
+		  $typeLink = '<a class="unclickable" href="" >'.$title.'</a>';
 		}
 		
 		$editCell = '<td ><img class="editCustomFacility" src="images/b_edit.png"/></td>';
-		if(defined('DEBUG')){
-		 $o .=  '<tr class="customFacilityRow" id="'.$row['id'].'">'.$editCell.'<td class="cell1" id="'.$row['id'].'">'.$row['id'].''.'</td><td class="nameCell" id="'.$row['name'].'">'.$row['name'].'</td><td>'.$row['address'].'</td><td>'.$row['city'].
-  		           '</td><td>'.$row['state'].'</td><td>'.$row['zip'].'</td><td class="customFacilityTypeId" id="'.$row['facilityTypeId'].'"><a class="unclickable" href="" >'.$title.'</td><td class="customFacilityTypeId" id="'.$row['facilityTypeId'].'">'.$row['facilityTypeId'].'</td></tr>';
-		}else{
+//		if(defined('DEBUG')){
+//		 $o .=  '<tr class="customFacilityRow" id="'.$row['id'].'">'.$editCell.'<td class="cell1" id="'.$row['id'].'">'.$row['id'].''.'</td><td class="nameCell" id="'.$row['name'].'">'.$row['name'].'</td><td>'.$row['address'].'</td><td>'.$row['city'].
+//  		           '</td><td>'.$row['state'].'</td><td>'.$row['zip'].'</td><td class="customFacilityTypeId" id="'.$row['facilityTypeId'].'"><a class="unclickable" href="" >'.$title.'</td><td class="customFacilityTypeId" id="'.$row['facilityTypeId'].'">'.$row['facilityTypeId'].'</td></tr>';
+//		}else{
 		 $o .=  '<tr class="customFacilityRow" id="'.$row['id'].'">'.$editCell.'<td class="nameCell" id="'.$row['name'].'">'.$row['name'].'</td><td>'.$row['address'].'</td><td>'.$row['city'].
-  		           '</td><td>'.$row['state'].'</td><td>'.$row['zip'].'</td><td class="'.$customFacilityTypeIdClass.'" id="'.$row['facilityTypeId'].'"><a class="unclickable '.$linkTransparentClass.'" href="" >'.$title.'</td></tr>';
-		}
+  		           '</td><td>'.$row['state'].'</td><td>'.$row['zip'].'</td><td class="'.$customFacilityTypeIdClass.'" id="'.$row['facilityTypeId'].'">'.$typeLink.'</td></tr>';
+		 
 	}
 	return $o;
 	 
