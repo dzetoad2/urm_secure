@@ -33,6 +33,7 @@
 	
  		//=================ADULT BLOCK =====================
   
+	
  if($afDao->isPerformedAdult=="na"){
  	$afDao->errorLabel .= "Error: Adult: Do you perform this procedure? Please choose yes or no<br/>";
  	$afDao->isPerformedAdultErrorImg = $afDao->errorImg;
@@ -52,6 +53,7 @@
 		$afDao->volumeAdult=-1; //forced
 		$afDao->methodologyAdult="na";//forced
  	}else{ //hastimestandard == yes
+ 		
  		if(!isPosInt($afDao->durationAdult)){
  			//durationadult is invalid, error, done.
  			$afDao->errorLabel.="Error: Adult:  Duration must be a positive integer<br/>";
@@ -60,16 +62,13 @@
  		if($afDao->durationAdult>999){
  				$afDao->errorLabel.="Error: Adult: Duration must be less than 1000<br/>";
  				$afDao->durationAdultErrorImg = $afDao->errorImg;
- 		}
- 		if(isset($customActivityId)){
- 		  if(!isPosInt($afDao->volumeAdult)   || $afDao->volumeAdult > 20000    ){
+ 		} 
+ 		if(!isPosInt($afDao->volumeAdult)   || $afDao->volumeAdult > 20000    ){
  				$afDao->errorLabel.="Error: Adult: Volume must be a positive integer between 0 and 20000 inclusive<br/>";
  				$afDao->volumeAdultErrorImg = $afDao->errorImg;
- 		  }
+// 				die('afdao volumeadult failed posint test, errorlabel is: '.$afDao->errorLabel);
  		}else{
- 			$em = 'customactivityid not set???';
- 			throwMyExc($em);
- 			
+// 			die('afdao volumeadult passed posint test');
  		}
  		if($afDao->methodologyAdult=="na"){
  				$afDao->errorLabel.="Error: Adult: Please choose a methodology<br/>";
@@ -85,6 +84,7 @@
  if($afDao->isPerformedPediatric=="na"){
  	$afDao->errorLabel .= "Error: Pediatrics: Do you perform this procedure? Please choose yes or no<br/>";
  	$afDao->isPerformedPediatricErrorImg = $afDao->errorImg; 
+ 	die('isperformed ped = na');
  }else if($afDao->isPerformedPediatric=="no"){
 	//done 	
 	$afDao->hasTimestandardPediatric="na";//forced
@@ -103,19 +103,20 @@
  	}else{//hastimestandard == yes
  		if(!isPosInt($afDao->durationPediatric)){
  			//durationped is invalid, error, done.
- 			$afDao->errorLabel.="Error: Pediatrics:  Duration must be a positive integer<br/>";
+ 			$afDao->errorLabel .= "Error: Pediatrics:  Duration must be a positive integer<br/>";
  			$afDao->durationPediatricErrorImg = $afDao->errorImg;
  		}
- 		if($afDao->durationPediatric>999){
+ 		if($afDao->durationPediatric > 999){
  				$afDao->errorLabel.="Error: Pediatrics: Duration must be less than 1000<br/>";
  				$afDao->durationPediatricErrorImg = $afDao->errorImg;
  		}
- 		if(isset($customActivityId)){
- 		  if(!isPosInt($afDao->volumePediatric) || $afDao->volumePediatric > 20000     ){
- 				$afDao->errorLabel.="Error: Pediatrics: Volume must be a positive integer between 0 and 20000 inclusive<br/>";
- 				$afDao->volumePediatricErrorImg = $afDao->errorImg;
- 		  }
+ 		if(!isPosInt($afDao->volumePediatric) || $afDao->volumePediatric > 20000     ){
+ 			$afDao->errorLabel.="Error: Pediatrics: Volume must be a positive integer between 0 and 20000 inclusive<br/>";
+ 			$afDao->volumePediatricErrorImg = $afDao->errorImg;
+ 		}else{
+ 		  	
  		}
+ 	 
  		if($afDao->methodologyPediatric=="na"){
  				$afDao->errorLabel.="Error: Pediatrics: Please choose a methodology<br/>";
  				$afDao->methodologyPediatricErrorImg = $afDao->errorImg;
@@ -156,11 +157,11 @@ if($afDao->isPerformedNatal=="na"){
  				$afDao->errorLabel.="Error: NeoNatal: Duration must be less than 1000<br/>";
  				$afDao->durationNatalErrorImg=$afDao->errorImg;
  		}
- 		if(isset($customActivityId)){
- 		  if(   !isPosInt($afDao->volumeNatal)   || $afDao->volumeNatal > 20000  ){
- 				$afDao->errorLabel.="Error: NeoNatal: Volume must be a positive integer between 0 and 20000 inclusive<br/>";
- 				$afDao->volumeNatalErrorImg=$afDao->errorImg;
- 		  }
+ 		if(   !isPosInt($afDao->volumeNatal)   || $afDao->volumeNatal > 20000  ){
+ 			$afDao->errorLabel.="Error: NeoNatal: Volume must be a positive integer between 0 and 20000 inclusive<br/>";
+ 			$afDao->volumeNatalErrorImg=$afDao->errorImg;
+ 		}else{
+
  		}
  		if($afDao->methodologyNatal=="na"){
  				$afDao->errorLabel.="Error: NeoNatal: Please choose a methodology<br/>";

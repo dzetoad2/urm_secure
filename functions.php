@@ -7,7 +7,7 @@ require_once('urm_secure/constants.php');
 session_start();
 
 //connect db
-$conn = mysql_connect("localhost","root"," ");
+$conn = mysql_connect("localhost","myroot","f");
 if($conn===FALSE) 
 {
 	$errorMsg="Database connection failed. Check name/pw.";

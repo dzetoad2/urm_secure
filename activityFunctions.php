@@ -64,10 +64,14 @@ function getCustomActivityData($userId, $customActivityId){
 	$id = "uninit id";
 	$title = "uninit title";
 	$descr = "uninit descr";
+	$fid = "uninit fid";
+	$is_cf = "uninit is_cf";
 	$o['id'] = $id;
 	$o['title'] = $title;
 	$o['descr'] = $descr;
-	$result = mysql_queryCustom("select id,title, description from customActivity where userid=".$userId." and id = ".$customActivityId.";");           //check un/pw against db.
+	$o['fid'] = $fid;
+	$o['is_cf'] = $is_cf;
+	$result = mysql_queryCustom("select id,title, description, fid, is_cf from customActivity where userid=".$userId." and id = ".$customActivityId.";");           //check un/pw against db.
 	if($result === FALSE){
 		$errorMsg='getCustomActivityData() query failed';
 		throwMyExc($errorMsg);
@@ -89,10 +93,15 @@ function getCustomActivityData($userId, $customActivityId){
 		$id = $row['id'];
 		$title = $row['title'];
 		$descr = $row['description'];
+		$fid = $row['fid'];
+		$is_cf = $row['is_cf'];
 	}
 	$o['id'] = $id;
 	$o['title'] = cleanDocString($title);
 	$o['descr'] = cleanDocString($descr);
+	$o['fid'] = cleanDocString($fid);
+	$o['is_cf'] = cleanDocString($is_cf);
+	
 	return $o;
 }
 
@@ -389,10 +398,11 @@ function getSurveyAnswerRow($userId, $fid,$aid,$is_cf,$is_ca){
 	$is_cf = cleanStrForDb($is_cf);
 	$is_ca = cleanStrForDb($is_ca);
 	
-	$result = mysql_queryCustom("select * from surveyAnswer where userid=".$userId."  and  facilityId = ".$fid."
-                   and activityId=".$aid." and isCustomFacility=".$is_cf." and isCustomActivity=".$is_ca);           //check un/pw against db.
+	$q = "select * from surveyAnswer where userid=".$userId."  and  facilityId = ".$fid."
+                   and activityId=".$aid." and isCustomFacility=".$is_cf." and isCustomActivity=".$is_ca;
+	$result = mysql_queryCustom($q);           //check un/pw against db.
 	if($result === FALSE){
-		throwMyExc('getsurveyanswerrow(): query failed');
+		throwMyExc('getsurveyanswerrow(): query failed, query-text: '.$q);
 	}
 	$numrows = mysql_num_rows($result);
 		//return "test debugline  in getDuration!";

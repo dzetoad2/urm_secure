@@ -20,8 +20,19 @@ function isValidPassword($pw){
 	return $e;
 }
 
+
+/*
+ *   checks to see if is pos int.
+ *   1 is ok
+ *   0001 is ok
+ *   9 is ok
+ *   0 is not
+ *   -1 is not
+ *   -300 is not
+ *   
+ */
 function isPosInt($instr){
-		$p = '/^[0-9]+$/';
+		$p = '/^[0]*[1-9][0-9]*$/';            
 		$r = preg_match($p, $instr);  //pregmatch returns 0 or 1.  0 means it was found 0 times.
 		if(0===$r){
 			return false;

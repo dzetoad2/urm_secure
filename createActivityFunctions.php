@@ -1,5 +1,5 @@
 <?php
-function createCustomActivity($title,$descr,$surveyCategoryId,$userId)
+function createCustomActivity($title,$descr,$surveyCategoryId,$userId, $fid, $is_cf)
 {
 	//insert into db.
 	$title = cleanStrForDb($title);
@@ -7,8 +7,8 @@ function createCustomActivity($title,$descr,$surveyCategoryId,$userId)
 	$surveyCategoryId = cleanStrForDb($surveyCategoryId);
 	$userId = cleanStrForDb($userId);
 	
-	 $res=mysql_queryCustom("INSERT INTO customActivity (title, description, surveyCategoryId, userid)
-		     VALUES ('".$title."','".$descr."', ".$surveyCategoryId.", ".$userId.")");
+	 $res=mysql_queryCustom("INSERT INTO customActivity (title, description, surveyCategoryId, userid, fid, is_cf)
+		     VALUES ('".$title."','".$descr."', ".$surveyCategoryId.", ".$userId.", ".$fid.", ".$is_cf.")");
 	 if($res===false){
 	 	throwMyExc("createcustomactivity: insert query returned false");	
 	 }
@@ -21,7 +21,7 @@ function createCustomActivity($title,$descr,$surveyCategoryId,$userId)
 	 }
 	 $id = mysql_insert_id();
 	 if($id === false || $id === 0){
-   	 	throwMyExc('createcustomactivity(): mysql insert id is false or 0 - something went wrong.');
+   	 	throwMyExc('createcustomactivity(): mysql_insert_id is false or 0 - something went wrong.');
 	 }
 	 return $id; // this is the id of the newly created custom activity.
 }

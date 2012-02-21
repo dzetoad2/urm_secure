@@ -23,6 +23,7 @@
 	<?php  echo $_isPerformedAdultErrorImg; ?>
   </fieldset>
  </div>
+    
   
  <div class="radio startHidden" id="timeStandardAdult">
   <fieldset>

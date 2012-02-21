@@ -190,7 +190,10 @@ function getCustomActivityRowsHtml($userId, $facilityId, $isCustomFacility, $isC
 	 */
 	$userId = cleanStrForDb($userId);
 	$surveyCategoryId = cleanStrForDb($surveyCategoryId);
-	$result = mysql_queryCustom("  select  id,title from customActivity where userid=".$userId." and surveyCategoryId = ".$surveyCategoryId.";");           //check un/pw against db.
+	$q = "  select  id,title from customActivity where userid=".$userId." and surveyCategoryId = ".$surveyCategoryId.
+		" and fid = ".$facilityId." and is_cf = ".$isCustomFacility.	
+	";";
+	$result = mysql_queryCustom($q);           //check un/pw against db.
 	if($result == FALSE){
 		return " ";
 	}
@@ -211,18 +214,18 @@ function getCustomActivityRowsHtml($userId, $facilityId, $isCustomFacility, $isC
 		
 		if(isActivityAnswered($userId,$facilityId,$row['id'], $isCustomFacility,1)){    //row[id] refers to the id of customActivity.
 		  $rowStatus = '<img class="" src="images/b_check.png"/>';
-		  $dropActivityAnswerImgStr = '<img class="dropActivityAnswer clickable" src="images/b_drop.png"/>';
+		  // $dropActivityAnswerImgStr = '<img class="dropActivityAnswer clickable" src="images/b_drop.png"/>';
 		  
 		}else{
 		  $rowStatus = '';//blank
-		  $dropActivityAnswerImgStr = '';
+		  //$dropActivityAnswerImgStr = '';
 		}
 		  					//if(defined('DEBUG')){
 		 //$o .=  '<tr class="customActivityRow clickable" id="'.$row['id'].'""><td><img class="edit" src="images/b_edit.png"/></td><td><img class="drop" src="images/b_drop.png"/></td><td class="cell1" id="'.$row['id'].'">'.$row['id'].''.'</td><td class="nameCell" id="'.$row['title'].'">'.$row['title'].'</td><td>'.$rowStatus .'</td></tr>';
 	 
-		 $o .=  '<tr class="customActivityRow   overGreen      " id="'.$row["id"].'" ><td class="" ><img class="edit clickable" src="images/b_edit.png"/></td><td>'.$dropActivityImgStr.'</td><td>'.$dropActivityAnswerImgStr.'</td><td class="nameCell clickable" id="'.$row['title'].'"><a class="unclickable" href="#"   >'.$row['title'].'  </a>  </td><td>'.$rowStatus .'</td></tr>';
+		 $o .=  '<tr class="customActivityRow   overGreen      " id="'.$row["id"].'" ><td class="" ><img class="edit clickable" src="images/b_edit.png"/></td><td>'.$dropActivityImgStr.'</td><td class="nameCell" id="'.$row['title'].'">'.$row['title'].'</td><td>'.$rowStatus .'</td></tr>';
 		 
-		
+		// <td>'.$dropActivityAnswerImgStr.'</td>   //: this was the 'drop answer' column, we disabled it feb 19(sunday).
 		
 	}
 	return $o;
@@ -269,8 +272,11 @@ function deleteCustomActivity($userId, $customActivityId){
 		throwMyExc($em);
 	}
 	$numrows = mysql_num_rows($r1);
-	if($numrows>0){
-		//none! so stop, return error msg! (not an Exception)
+	if($numrows>1){
+		
+	}
+	elseif($numrows==1){
+		//there exist surveyanswers! so stop, return error msg! (not an Exception)
 		$o['msg'] = 'There were '. $numrows .' total survey answer(s) found for this User Created Activity.  Please delete the corresponding answer for each facility first';
 		return $o;
 	}
@@ -317,7 +323,7 @@ function deleteCustomActivityAnswer($userId, $fid, $is_cf, $customActivityId){
 		 return $o;
 	}elseif($affected_rows == 0){
 		$o['msg'] = "No Survey Answer available to delete";
-		$o['hasError'] = true;
+		$o['hasError'] = false;
 		 return $o;
 		
 	}else{

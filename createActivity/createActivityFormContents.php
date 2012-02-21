@@ -188,25 +188,25 @@
 
 
 
+
+
 <?php if(defined('DEBUG')){?>
 <hr/>
 Debug info:<br/>
-fid:<input type="text" id="fid" name="fid" value="<?php echo $fid;?>"/>
+fid:<input type="text" id="fid" name="fid" value="<?php if(isset($fid)) echo $fid;?>"/>
 <!--aid: activityID or else customActivityId.-->
-aid<input type="text" id="aid" name="aid" value="<?php echo $aid;?>"/>
+aid<input type="text" id="aid" name="aid" value="<?php if(isset($aid)) echo $aid;?>"/>
 <!--is_cf: is custom facility? is_ca is customactivity?  both are bools-->
-is_cf:<input type="text" id="is_cf" name="is_cf" value="<?php echo $is_cf;?>"/>
-is_ca<input type="text" id="is_ca" name="is_ca" value="<?php echo $is_ca;?>"/>
+is_cf:<input type="text" id="is_cf" name="is_cf" value="<?php if(isset($is_cf)) echo $is_cf;?>"/>
+is_ca<input type="text" id="is_ca" name="is_ca" value="<?php if(isset($is_ca)) echo $is_ca;?>"/>
 <?php }else{?>
-<input type="hidden" id="fid" name="fid" value="<?php echo $fid;?>"/>
+<input type="hidden" id="fid" name="fid" value="<?php if(isset($fid)) echo $fid;?>"/>
 <!--aid: activityID or else customActivityId.-->
 
 <!--is_cf: is custom facility? is_ca is customactivity?  both are bools-->
-<input type="hidden" id="is_cf" name="is_cf" value="<?php echo $is_cf;?>"/>
-<input type="hidden" id="is_ca" name="is_ca" value="<?php echo $is_ca;?>"/>
+<input type="hidden" id="is_cf" name="is_cf" value="<?php if(isset($is_cf)) echo $is_cf;?>"/>
+<input type="hidden" id="is_ca" name="is_ca" value="<?php if(isset($is_ca)) echo $is_ca;?>"/>
 <?php }?>
-
-
 
 
 
