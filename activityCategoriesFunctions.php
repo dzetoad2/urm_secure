@@ -383,8 +383,10 @@ function fillOutThisSurveyCategory($userId, $facilityId,  $isCustomFacility, $su
 		foreach($activityCategoriesIds as $ac_id){
 			$q2 = 'select * from activity where activityCategoryId = '.$ac_id;
 			$r2 = mysql_query($q2);
-			if($r2===false)die('r2 false!');
-			
+			if($r2===false){
+				$em = 'r2 false!';
+				throwMyExc($em);
+			}
 			while($row = mysql_fetch_array($r2)){
 //				echo $row['title'] .'<br/>';
 				$activityIds[] = $row['id'];
@@ -416,8 +418,8 @@ function fillOutThisSurveyCategory($userId, $facilityId,  $isCustomFacility, $su
  					 $_durationNatal,$_volumeAdult,$_volumePediatric,$_volumeNatal,$_methodologyAdult,
  					 $_methodologyPediatric,$_methodologyNatal))){
     		   $errorMsg = "Error: Submission of survey data encountered an error<br/>";
-    		   //throwMyExc($errorMsg);
-    		   die($errorMsg);
+    		   throwMyExc($errorMsg);
+    		   //die($errorMsg);
  			 }
 		}
 		

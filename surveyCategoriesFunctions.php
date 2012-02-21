@@ -131,7 +131,7 @@ function dropSurveyAnswers($userId,$fid,$is_cf,$surveyCategoryId){
    $is_cf = cleanStrForDb($is_cf);
    $surveyCategoryId = cleanStrForDb($surveyCategoryId);
    
-   $res1 = mysql_queryCustom("  
+   $q1 = "  
       select  activity.id as aid    
       from activity 
       inner join (
@@ -140,12 +140,15 @@ function dropSurveyAnswers($userId,$fid,$is_cf,$surveyCategoryId){
       )
       on activity.activityCategoryId = activityCategory.id
       where activityCategory.surveyCategoryId = ". $surveyCategoryId."
-        ");
+        ";
+   
+   
+   $res1 = mysql_queryCustom($q1);
    if($res1 === FALSE){
-     throwMyExc("query failed: first query for dropsurveyanswers(...)");
+     throwMyExc("query failed: first query for dropsurveyanswers , q1: ".$q1);
    }
    $count = 0;
-    while($row = mysql_fetch_array($res1)){  //del all the (normal) activities i asnwered from this surveyCategory.
+    while($row = mysql_fetch_array($res1)){  //delete all the surveyanswers for normal activities i asnwered for this surveyCategory.
       $aid = $row['aid'];
       $qtext = "
         delete from surveyAnswer
@@ -156,7 +159,7 @@ function dropSurveyAnswers($userId,$fid,$is_cf,$surveyCategoryId){
        " and activityId = ".$aid ;
       $res2 = mysql_queryCustom($qtext);
       if($res2===FALSE)
-        throwMyExc("query failed: 2nd query in dropsurveyanswers(), count so far is: ".$count.", userid:".$userId.", fid:".$fid.", is_cf:".$is_cf.",aid:".$aid.",mysqlerror: ".mysql_error());
+        throwMyExc("dropsurveyanswers:  query failed: 2nd query, count so far is: ".$count.", querytext: ".$qtext.", mysqlerror: ".mysql_error());
       $n = mysql_affected_rows();
       if($n===1)
         $count++;
@@ -198,9 +201,19 @@ function dropSurveyAnswers($userId,$fid,$is_cf,$surveyCategoryId){
     	}else{
     		throwMyExc("in loop after query r4 - Error: mysql affected rows was neither 0 nor 1, n is: ".$n.";  ");
     	}
+    	
+    }
+    	//=========== NOW delete those customActivities.=====
+    //   only delete the customactivites for this user, fid, is_cf, surveyCategoryId.
+    $q6 = 'delete from customActivity where userId = '.$userId.' and surveyCategoryId = '.$surveyCategoryId.' and fid = '.$fid.' and is_cf = '.$is_cf;
+    $r6 = mysql_queryCustom($q6);
+    if($r6===false){
+    	$em='dropsurveyanswer: query 6 failed, q6: '.$q6;
+    	throwMyExc($em);
     }
     
-	return $count;   
+    
+	return $count;   //this is the count of total surveyanswers deleted.
 }
 
 function getSurveyCategoryOwnerId($userFacilityId, $is_cf, $surveyCategoryId){

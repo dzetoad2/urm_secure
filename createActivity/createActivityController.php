@@ -66,9 +66,7 @@
  		if(!isPosInt($afDao->volumeAdult)   || $afDao->volumeAdult > 20000    ){
  				$afDao->errorLabel.="Error: Adult: Volume must be a positive integer between 0 and 20000 inclusive<br/>";
  				$afDao->volumeAdultErrorImg = $afDao->errorImg;
-// 				die('afdao volumeadult failed posint test, errorlabel is: '.$afDao->errorLabel);
  		}else{
-// 			die('afdao volumeadult passed posint test');
  		}
  		if($afDao->methodologyAdult=="na"){
  				$afDao->errorLabel.="Error: Adult: Please choose a methodology<br/>";
@@ -84,7 +82,6 @@
  if($afDao->isPerformedPediatric=="na"){
  	$afDao->errorLabel .= "Error: Pediatrics: Do you perform this procedure? Please choose yes or no<br/>";
  	$afDao->isPerformedPediatricErrorImg = $afDao->errorImg; 
- 	die('isperformed ped = na');
  }else if($afDao->isPerformedPediatric=="no"){
 	//done 	
 	$afDao->hasTimestandardPediatric="na";//forced

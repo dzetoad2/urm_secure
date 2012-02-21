@@ -57,8 +57,8 @@ function loggedin(){
       	throwMyExc($em);
       }
 	  if(!isset($result)){ 
-	    die("Error checking login against database");
-	    exit();
+	    $em = "Error checking login against database";
+	    throwMyExc($em);
 	  }
 //	      echo "3<br/>";
 	 $row = mysql_fetch_assoc($result);   //associative. this is first row of the result.
