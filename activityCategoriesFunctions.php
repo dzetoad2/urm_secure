@@ -334,6 +334,37 @@ function deleteCustomActivityAnswer($userId, $fid, $is_cf, $customActivityId){
 	
 }
 
+/*
+ * Drops all customactivities made by this user, related to any normal faciltiies.
+ * for normal facilities (userfacilities), NOT customFacilities.
+ */
+function deleteCustomActivitiesForUserInNormalFacilities($userId){
+	$q1 = 'delete from customActivity where userId = '.$userId.' and is_cf = 0';
+	$r1 = mysql_queryCustom($q1);
+	if($r1===false){
+		$em='q1 fail, q: '.$q1;
+		throwMyExc($em);
+	}
+	$affected_rows = mysql_affected_rows();
+	return $affected_rows;
+}
+
+/*
+ * Drops all customactivities made by this user, related to any custom faciltiies.
+ * for custom facilities deletion only, NOT normal facilities.
+ */
+function deleteCustomActivitiesForUserInCustomFacilities($userId){
+	$q1 = 'delete from customActivity where userId = '.$userId.' and is_cf = 1';
+	$r1 = mysql_queryCustom($q1);
+	if($r1===false){
+		$em='q1 fail, q: '.$q1;
+		throwMyExc($em);
+	}
+	$affected_rows = mysql_affected_rows();
+	return $affected_rows;
+}
+
+
 
 
 function fillOutThisSurveyCategory($userId, $facilityId,  $isCustomFacility, $surveyCategoryId ){

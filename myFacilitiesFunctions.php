@@ -1,6 +1,8 @@
 <?php
 //input: username
 //output:  all the rows
+require_once('activityCategoriesFunctions.php');
+
 function getMyFacilitiesRowsHtml($userId){
 	/* 
 	 * select userFacility.id, facility.name from user
@@ -60,23 +62,38 @@ function getMyFacilitiesRowsHtml($userId){
 }
 
 function clearFacilities($userId){
-//  1.    know these are normal facil, not custom.
-//  2. delete from surveyAnswer all answers corresponding to this userid and that are normal facilities.
+//  *  know these are normal facil, not custom.
+//  1.  clear the user facilities.
+//  2.  delete from surveyAnswer all answers corresponding to this userid and that are normal facilities.
+//  3.  new**:  clear any related customactivities, and surveyanswers for them.
+
+	//3:
+	$affected_rows = deleteCustomActivitiesForUserInNormalFacilities($userId);
+	
 	$userId = cleanStrForDb($userId);
-	$result = mysql_queryCustom("delete from userFacility where userId = $userId");
+	$q = "delete from userFacility where userId = $userId";  //1
+	$result = mysql_queryCustom($q);
 	if($result===false)
-      throwMyExc("clearFacilities: Error in delete query from userFacility");
+      throwMyExc("clearFacilities: Error in delete query from userFacility, q: ".$q);
 	$n = mysql_affected_rows();
-	$r2 = mysql_queryCustom("delete from surveyAnswer where userId = ".$userId." and isCustomFacility = 0");
+	$q2 = "delete from surveyAnswer where userId = ".$userId." and isCustomFacility = 0";   //2   (those are already gone if surveyanswer table is foreignkey linked to iscustomfacil.
+	$r2 = mysql_queryCustom($q2);
     if($r2===false){
-	  throwMyExc("clearFacilities: Error in (cascade) delete from surveyAnswer (cuz userFacility successfully deleted all facilities for this user)");
+	  throwMyExc("clearFacilities: r2 query error - Error in (cascade?) delete from surveyAnswer (cuz userFacility already successfully deleted all facilities for this user)");
 	}
+	
+	
 	return $n;
 }
 
 function clearCustomFacilities($userId){
 //  1. get list of customfacility id.  know these are custom facil, not normal.
 //  2. delete from surveyAnswer all answers corresponding to this customfacilityid and userid.
+//  3.  new**:  clear any related customactivities, and surveyanswers for them.
+	
+	//3: 
+	$affected_rows = deleteCustomActivitiesForUserInCustomFacilities($userId);
+	
 	$userId = cleanStrForDb($userId);
 	$result = mysql_queryCustom("delete from customFacility where userid = $userId");
 	if($result===false) 
@@ -86,6 +103,8 @@ function clearCustomFacilities($userId){
     if($r2===false){
 	  throwMyExc("clearCustomFacilities: Error in (cascade) delete from surveyAnswer (cuz userFacility successfully deleted all facilities for this user)");
 	}    
+	
+	
 	return $n;
 }
 
