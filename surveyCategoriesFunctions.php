@@ -122,7 +122,7 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
  *        Do lookup to find which activityIds go with the surveyCategoryId here. (do this first)
  *   return: count of records successfully deleted, or else exception.
  *   - delete answers for those.
- *   - then delete customactivities for this user and this surveycategoryid.
+ *   - then delete customactivities for this user and this surveycategoryid and this facility (fid, is_cf).  There is a preexisting routine to do that - call it.
  */
 function dropSurveyAnswers($userId,$fid,$is_cf,$surveyCategoryId){
    //get list of activityIds which are under the surveyCategoryId specified.
@@ -168,7 +168,8 @@ function dropSurveyAnswers($userId,$fid,$is_cf,$surveyCategoryId){
     }
     //now drop the customactivities i did for this surveycategory.
     //get list of customActivities for this user.
-    $q4 = 'select id from customActivity where userId = '.$userId.' and surveyCategoryId = '.$surveyCategoryId.' ; ';
+    
+    $q4 = 'select id from customActivity where userId = '.$userId.' and surveyCategoryId = '.$surveyCategoryId.' and fid = '.$fid.' and is_cf = '.$is_cf.' ; ';
     $r4 = mysql_queryCustom($q4);
     if($r4===false){
 		$em='dropsurveyanswers: q4 query failed, q4: '.$q4;

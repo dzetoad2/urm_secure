@@ -43,6 +43,21 @@ function isPosInt($instr){
 		}
 }
 
+function isNonNegInt($instr){
+		$p = '/^[0-9]+$/';            
+		$r = preg_match($p, $instr);  //pregmatch returns 0 or 1.  0 means it was found 0 times.
+		if(0===$r){
+			return false;
+		}elseif(1===$r){
+			return true;
+		}else{
+		throwMyExc("isnonnegInt(): preg match was neither 0 nor 1!");
+		}
+	
+	
+}
+
+
 function isDouble($dur){
 	$p = '/^[0-9]+((\.)[0-9]+)?$/';
 	if(  preg_match($p,$dur)){
@@ -72,7 +87,7 @@ function isValidZip($z){
 
 function isValidPartialZip($z){
 	 //check 3+ characters, and isposint(input_string_int).
-	 if(  (strlen($z) >= 3)  &&   (isPosInt($z))  ){
+	 if(  (strlen($z) >= 3)  &&   (isNonNegInt($z))  ){
 	 	return true;
 	 }
 	 return false;
