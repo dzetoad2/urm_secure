@@ -62,6 +62,12 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 		//========DEFAULT UNLESS WE NEED OTHERWISE=====
 		$isAllowed=true;
 		$classRow = 'surveyCategoryRow';
+		
+		
+		$titleLinkStr = '<a class="unclickable '. $classRow.'" href="" >'.$row['title'].'</a>';
+		
+		
+		
 		$dropCellStr = '<td class="drop clickable"><img src="images/b_drop.png" /></td>'   ;
 		
 		$surveyCategoryOwner='';
@@ -78,6 +84,15 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 		   //deny access.
 		    $isAllowed = false;
 		    $classRow = 'grayText';
+		    
+		    
+		    
+		    
+		    $titleLinkStr =  $row['title'];
+		    
+		    
+		    
+		    
 		    $dropCellStr = '<td></td>';
 		  }
 		  
@@ -98,12 +113,8 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 			throwMyExc($em);
 		}
 
-//		if(defined('DEBUG')){
-//		 $o .=  '<tr class="'.$classRow.'" id="'.$row['id'].'"><td class="drop"><img '.$dropImgSrcStr.' /></td><td class="cell1" id="'.$row['id'].'">'
-//		      .$row['id'].''.'</td><td class="nameCell" id="'.$row['title'].'"><a class="unclickable" href="" >'.$row['title'].'</a></td><td>'.$rowStatus.'</td><td>'.$surveyCategoryOwner.'</td></tr>';
-//		}else{
-		 $o .=  '<tr class="'.$classRow.'" id="'.$row['id'].'">'.$dropCellStr.'<td class="nameCell" id="'.$row['title'].'"><a class="unclickable '. $classRow.'" href="" >'
-		     .$row['title'].'</a></td><td>'.$rowStatus.'</td>'.$surveyCategoryOwnerCellStr .'</tr>';
+		
+		 $o .=  '<tr class="'.$classRow.'" id="'.$row['id'].'">'.$dropCellStr.'<td class="nameCell" id="'.$row['title'].'">'.$titleLinkStr.'</td><td>'.$rowStatus.'</td>'.$surveyCategoryOwnerCellStr .'</tr>';
 		 
 	}
 	

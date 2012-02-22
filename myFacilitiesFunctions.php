@@ -34,19 +34,24 @@ function getMyFacilitiesRowsHtml($userId){
 		$title = $row['title'];
 		if(!$title ||  trim($title==""))
 		  $title = "Unknown(error)";
-		$userFacilityRowClass = 'grayText';
-		$facilityTypeIdClass = '';
+		$userFacilityRowClass = 'userFacilityRow';
+		$facilityTypeIdClass = 'grayText';
 		$linkGrayClass = 'transparent';
 		$editCell = '<td class="transparent"><img src="images/b_edit.png"/></td>';
-		if($row['myOrder'] > 0){          //$row['facilityTypeId']!=6  &&   $row['facilityTypeId']!=9
-		  $userFacilityRowClass = 'userFacilityRow';
+		$typeLinkStr =  $title;
+		if($row['myOrder'] > 0){          // clickable!
+//		  $userFacilityRowClass = 'userFacilityRow';
 		  $facilityTypeIdClass='facilityTypeId';
-		  $linkGrayClass = '';
+		  $linkGrayClass = ''; //makes it normal and look like clickable
 		  $editCell = '<td ><img class="editFacility" src="images/b_edit.png"/></td>';
+		  $typeLinkStr = '<a class="unclickable" href="" >'.$title.'</a>';
 		}
-		if($row['myOrder'] == 0){
-			$userFacilityRowClass = 'userFacilityRow';
+		if($row['myOrder'] == 0){  //0 : critical access hospital. should NOT be clickable.
+//			$userFacilityRowClass = 'userFacilityRow';
+			$facilityTypeIdClass = 'grayText';
 			$editCell = '<td ><img class="editFacility" src="images/b_edit.png"/></td>';
+			$typeLinkStr =  $title;
+			
 		}  
 		$dropCell = ''; //<td ><img class="editFacility" src="images/b_drop.png"/></td>';
 
@@ -54,8 +59,10 @@ function getMyFacilitiesRowsHtml($userId){
 //		$o .=  '<tr class="'.$userFacilityRowClass.'" id="'.$row['id'].'" >'.$dropCell.$editCell.'<td>'.$row['id'].'</td><td class="nameCell" id="'.$row['name'].'">'.$row['name'].'</td><td>'.$row['address'].'</td><td>'.$row['city'].
 //  		           '</td><td>'.$row['state'].'</td><td>'.$row['zip'].'</td><td class="'.$facilityTypeIdClass.'" id="'.$row['facilityTypeId'].'"><a class="unclickable '.$linkGrayClass.'" href="" >'.$title.'</a></td><td class="facilityTypeId" id="'.$row['facilityTypeId'].'" >'.$row['facilityTypeId'].'</td></tr>';
 //		}else{
+
+		
 		$o .=  '<tr class="'.$userFacilityRowClass.'" id="'.$row['id'].'" >'.$dropCell.$editCell.'<td class="nameCell" id="'.$row['name'].'">'.$row['name'].'</td><td>'.$row['address'].'</td><td>'.$row['city'].
-  		           '</td><td>'.$row['state'].'</td><td>'.$row['zip'].'</td><td class="'.$facilityTypeIdClass.'" id="'.$row['facilityTypeId'].'"><a class="unclickable '.$linkGrayClass.'" href="" >'.$title.'</a></td></tr>';
+  		           '</td><td>'.$row['state'].'</td><td>'.$row['zip'].'</td><td class="'.$facilityTypeIdClass.'" id="'.$row['facilityTypeId'].'">'.$typeLinkStr.'</td></tr>';
 		
 	}
 	return $o;
