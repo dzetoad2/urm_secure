@@ -25,13 +25,12 @@ function getSurveyCategoriesRowsHtml($userId, $facilityId, $isCustomFacility){
 	
 	$facilityTypeTitleStr = getFacilityTypeStrFromFacilityEntry($userId, $facilityId, $isCustomFacility);
 	
-	if(false === strpos($facilityTypeTitleStr, 'Pulmonary' )){
-		$conditionStr = '';
+	$conditionStr='';
+	
+	//if(true === strpos($facilityTypeTitleStr, 'Pulmonary' )){
+	//	$conditionStr = 'WHERE  id = 6';
 		//die('condition NOT met.  fttstr: '.$facilityTypeTitleStr);
-	}else{
-		$conditionStr = 'WHERE  id = 6';
-		//die('condition met');
-	}
+	//}
 	
 	
 	//CLEAN - OK.
