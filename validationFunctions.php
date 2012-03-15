@@ -1,7 +1,9 @@
 <?php 
 
 function isValidPassword($pw){
-//# of characters btwn 8 and 30
+/*# of characters btwn 8 and 30
+ * no weird chars.  only lowercase,  uppercase,  digits 0-9, !@#$%^&*. no others!
+ */
 	$e='';
 	if(strlen($pw)<8){
 		$e .= 'Password must contain at least 8 characters<br/>';
@@ -9,6 +11,14 @@ function isValidPassword($pw){
 	if(strlen($pw)>30){
 		$e .= 'Password must not contain more than 30 characters<br/>';
 	}
+	// 
+	$p = '/^[a-zA-Z0-9!@#$%^&*]+$/';
+	$r = preg_match($p,$pw);
+	if(0===$r){
+		$e .= 'Password must not contain characters other than alphanumerics and the following:  !@#$%^&*  <br/>';
+	}
+	
+	
 //has a number
 	if( !preg_match("#[0-9]+#", $pw) ) {
 		$e .= "Password must include at least one number <br />";

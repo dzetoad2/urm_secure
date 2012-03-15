@@ -33,7 +33,7 @@ function makeRandomPassword() {
     srand((double)microtime()*1000000);
     $i = 0;
     $pass = '' ;
-    while ($i <= 14) {
+    while ($i <= 10) {
         $num = rand() % 36;
         $tmp = substr($chars, $num, 1);
         $pass = $pass . $tmp;
