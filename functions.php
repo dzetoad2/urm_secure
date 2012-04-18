@@ -172,7 +172,9 @@ function throwMyExc($em){
 	 	$file = $e->getFile();
 	 	$line = $e->getLine();
 	 	$trace = $e->getTraceAsString();
-	 	error_log('<ERROR>'.$un.', '.$uid.  ', msg: '.$msg.', file: '.$file.', line: '.$line.', trace: '.$trace.'</ERROR>');
+	 	$message = '<ERROR>'.$un.', '.$uid.  ', msg: '.$msg.', file: '.$file.', line: '.$line.', trace: '.$trace.'</ERROR>';
+	 	error_log($message);
+	 	sendEmail($_SESSION['userid'], $message);
      }
 	 	 //error_log("test error log in throwmyexc",3,'/var/log/URM-errors2.log') or die('could not log error');
 	 throw new Exception($e);
@@ -216,6 +218,21 @@ function throwMyExc_nonCritical($em){
 	exit();
 }
 
+function sendEmail($userId, $message){
+	
+    $to = $userId; 
+    $from = "URM_Notifications_Errors--do_not_reply@aarc.org"; 
+    $subject = "URM Notification - Error occurred"; 
+	$headers  = "From: $from\r\n"; 
+    $headers .= "Content-type: text/html\r\n"; 
+	
+	$e = '';
+    if(!mail($to,$subject,$message,$headers)){
+  	  $em .=  'sendcompletionstatusemail():  Failure sending email<br/>';
+  	  throwMyExc($em);
+    }
+	
+}
 
 
 function cleanDocString($s){

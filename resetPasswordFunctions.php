@@ -42,29 +42,7 @@ function makeRandomPassword() {
     return $pass;
 }
 
-function sendCompletionStatusEmail($userId,$surveyCategoryId){
-	if($surveyCategoryId != 1){
-		$em= 'sendcompletionstatusemail:  surv cat id not 1, invalid';
-		throwMyExc($em);
-	}
-	$to = $userId; 
-    $from = "URM_Notifications--do_not_reply@aarc.org"; 
-    $subject = "Hello! This is HTML email"; 
-	$headers  = "From: $from\r\n"; 
-    $headers .= "Content-type: text/html\r\n"; 
-	$message = completionText::$completionMessage;
-	
-	$e = '';
-    if(!mail($to,$subject,$message,$headers)){
-  	  $e .=  'Failure sending email<br/>';
-    }
-}
-
-
-
-
-
-
+  
 
 //notes: 
 

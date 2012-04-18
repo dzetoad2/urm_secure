@@ -346,7 +346,7 @@ function sendCompletionStatusEmail($userId,$surveyCategoryId){
 	}
 	$to = $userId; 
     $from = "URM_Notifications--do_not_reply@aarc.org"; 
-    $subject = "Hello! This is HTML email"; 
+    $subject = "URM Notification"; 
 	$headers  = "From: $from\r\n"; 
     $headers .= "Content-type: text/html\r\n"; 
 	$message = completionText::$completionMessage;
