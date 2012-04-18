@@ -275,6 +275,93 @@ function updateSurveyAnswer($userId, $_fid,$_aid,$_is_cf,$_is_ca,$_isPerformedAd
 	}
 }
 
+function markStatus($userId, $fid, $isCustomFacility, $surveyCategoryId){
+	if($surveyCategoryId != 1){  // if surv cat id is not 1, we dont care - do nothing, exit.
+		return;
+	}
+	$userId = cleanStrForDb($userId);
+	$fid = cleanStrForDb($fid); //either userfacility id or customfacility id
+	$isCustomFacility = cleanStrForDb($isCustomFacility);
+	
+	if($isCustomFacility==0){//use userFacility table
+		$tableName = 'userFacility';		
+	}elseif($isCustomFacility==1){
+ 		$tableName = 'customFacility';		 
+	}else{
+		$em = 'error: markStatus() - isCustomfacility is neither 0 nor 1.';
+		throwMyExc($em);
+	}
+	
+	$q1 = 'select completionStatus from '.$tableName.' where id = '.$fid.'  and userId = '.$userId.'  ;    ';
+	$res = mysql_queryCustom($q1);    //do a get of current completion status.
+	if($res===false){
+		$em = 'markstatus: q1 fail: '.$q1;
+		throwMyExc($em);
+	}
+	$numrows = mysql_num_rows($res);
+	if($numrows!=1){
+		$em = 'markstatus: q1 numrows not = 1, q1: '.$q1;
+		throwMyExc($em);
+	}
+	$row = mysql_fetch_array($res);
+	$cStat = trim($row['completionStatus']);
+	if($cStat == '0000000'){   //only applicable for acute care hospital survey.  it's id = 1, Acute Care Inpatient Services
+		         				// in surveyCategory table. 
+		if($surveyCategoryId == 1){  //ok! it's applicable, and it was unfinished.
+			//die('surveycategoryid == 1!');
+			//set new cStat.
+			$newCStat = '1000000';
+			//write it to the db.
+			$q2 = 'update '.$tableName.' set completionStatus = "'.$newCStat.'" where id = '.$fid.'  and userId = '.$userId.'; ';
+			$res = mysql_queryCustom($q2); //does an update, so return is true on sucess, false on error.
+			if($res===false){
+				$em = 'markstatus: q2 fail: '.$q2;
+				throwMyExc($em); 
+			}
+			$n = mysql_affected_rows();
+			if($n!=1){
+				$em = 'markstatus: mysql affected rows for q2 was not = 1, thus invalid.  q2: '.$q2;
+			}
+			//confirmed one row updated to be '1000000'. now, send the email to the user.
+			sendCompletionStatusEmail($userId,$surveyCategoryId);
+			
+			
+		}else{
+			//do nothing. cuz its other survey categories.
+		}
+	}elseif($cStat == '1000000'){
+		//do nothing, cuz it's either already finished, or maybe another survey category.
+	}else{
+		$em='markstatus:  current cStat was neither 0000000 nor 1000000, impossible: cstat: '.$cStat;
+		throwMyExc($em);
+	}
+	
+	
+}
+
+function sendCompletionStatusEmail($userId,$surveyCategoryId){
+	if($surveyCategoryId != 1){
+		$em= 'sendcompletionstatusemail:  surv cat id not 1, invalid';
+		throwMyExc($em);
+	}
+	$to = $userId; 
+    $from = "URM_Notifications--do_not_reply@aarc.org"; 
+    $subject = "Hello! This is HTML email"; 
+	$headers  = "From: $from\r\n"; 
+    $headers .= "Content-type: text/html\r\n"; 
+	$message = completionText::$completionMessage;
+	
+	$e = '';
+    if(!mail($to,$subject,$message,$headers)){
+  	  $em .=  'sendcompletionstatusemail():  Failure sending email<br/>';
+  	  throwMyExc($em);
+    }
+}
+
+
+
+
+
 function getDurationAdult($userId, $fid,$aid,$is_cf,$is_ca){
 	$userId = cleanStrForDb($userId);
 	$fid = cleanStrForDb($fid);

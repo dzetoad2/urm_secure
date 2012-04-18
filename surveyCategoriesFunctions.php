@@ -141,6 +141,30 @@ function dropSurveyAnswers($userId,$fid,$is_cf,$surveyCategoryId){
    $is_cf = cleanStrForDb($is_cf);
    $surveyCategoryId = cleanStrForDb($surveyCategoryId);
    
+   if($surveyCategoryId==1){
+	   if($is_cf==0){
+	   	 $tableName = 'userFacility';
+	   }elseif($is_cf==1){
+	   	 $tableName = 'customFacility';
+	   }else{
+	   	 $em= 'dropsurveyanswers:  is_cf neither 0 nor 1, impossible';
+	   	 throwMyExc($em);
+	   }
+	   $q0 = 'update '.$tableName.' set completionStatus = "0000000" where userId = '.$userId.' and id = '.$fid.'; ';
+	   $r0 = mysql_queryCustom($q0);
+	   if($r0===false){
+	   	 $em='dropsurveyanswers: q0 fail, q0: '.$q0;
+	   	 throwMyExc($em);
+	   }
+	   $n = mysql_affected_rows();
+	   if($n!=1){
+	   	$em='dropsurveyanswers: mysql affected rows for the completionstatus update is not 1! invalid. n: '.$n.', q0: '.$q0;
+	   	throwMyExc($em);
+	   }
+   }else{
+   	// not in acute surv cat (cat id#1) so don't do anything.
+   }
+   
    $q1 = "  
       select  activity.id as aid    
       from activity 

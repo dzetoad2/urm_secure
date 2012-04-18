@@ -109,6 +109,8 @@ function getSurveyCategoryName($surveyCategoryId){
 	return $row['title'];
 }
 
+
+
 function getSurveyCategoryDoc($surveyCategoryId){
 	$surveyCategoryId = cleanStrForDb($surveyCategoryId);
 	$result = mysql_queryCustom("  SELECT doc FROM surveyCategory    

@@ -61,7 +61,7 @@ function isActivityCategoryStarted($userId, $facilityId, $activityCategoryId, $i
 	return false;
 }
 
-/*   This checks if the OTHER categories, in this activitycategory's same group, complete.  It does not check THIS activitycategory for completion.
+/*   This checks if the OTHER categories, in this activitycategory's same group, r complete.  It does not check THIS activitycategory for completion.
  *     Group is based on activitycategorydocid.  if same docid -> same group.
  */
 function isActivityCategoryGroupOtherCategoriesComplete($userId, $facilityId, $activityCategoryId, $isCustomFacility){

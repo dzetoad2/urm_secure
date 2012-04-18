@@ -215,25 +215,52 @@ if($_isPerformedNatal=="na"){
  	      	
  	      }
  	      
-	      if(!isActivityCategoryComplete($userId, $_fid, $activityCategoryId, $is_cf)){  
+ 	      $isActivityCategoryCompleteFlag =  isActivityCategoryComplete($userId, $_fid, $activityCategoryId, $is_cf);
+ 	      //$isActivityCategoryGroupOtherCategoriesCompleteFlag  =  
+	      if(!$isActivityCategoryCompleteFlag){ 
+	      	  //die('activitycategorycomplete is false'); 
 	    	  //just the activity category is not complete, so stay within it and get another activity to do.
 	    	  $_SESSION['activityId'] = getNextActivityId_FromOwnAC($userId, $_fid, $activityCategoryId, $is_cf,0); //is_ca is 0, last param.
  
 	          header('Location: activity.php');
 	          exit();
-	      }elseif(     isActivityCategoryComplete($userId, $_fid, $activityCategoryId, $is_cf) && 
-	              !isActivityCategoryGroupOtherCategoriesComplete($userId, $_fid, $activityCategoryId, $is_cf,0)){
-	      	$arr = getNextActivityId_WithinACGroup($userId, $_fid, $activityCategoryId, $is_cf,0);  //0 : is custom activity.
-	      	$_SESSION['activityId'] = $arr['activityId'];
-	      	if(!isset($_SESSION['activityCategoryDocId'])){
-	      	  $_SESSION['activityCategoryId'] = $arr['activityCategoryId'];
-	      	}
-	        header('Location: activity.php');
+	      }else{
+	      	$isActivityCategoryGroupOtherCategoriesCompleteFlag = isActivityCategoryGroupOtherCategoriesComplete($userId, $_fid, $activityCategoryId, $is_cf,0);
+	      	if(      $isActivityCategoryCompleteFlag  &&  
+						     !$isActivityCategoryGroupOtherCategoriesCompleteFlag){
+				//die('activitycategorycomplete is true, but activitycategorygroupothercategoriescomplete is false');		     	
+						     	
+						     	
+			//act category is complete, but not all the activity category other groups are complete.
+	      	  $arr = getNextActivityId_WithinACGroup($userId, $_fid, $activityCategoryId, $is_cf,0);  //0 : is custom activity.
+	      	  $_SESSION['activityId'] = $arr['activityId'];
+	      	  if(!isset($_SESSION['activityCategoryDocId'])){
+	      	    $_SESSION['activityCategoryId'] = $arr['activityCategoryId'];
+	      	  }
+	          header('Location: activity.php');
 	          exit();
-	      }else {
-		    //else all activities in *all groups* done - so just go up to the activities page.
-	       header('Location: activityCategories.php#activityCategories'); //was activities.php
-	       exit();
+			}elseif($isActivityCategoryCompleteFlag && $isActivityCategoryGroupOtherCategoriesCompleteFlag){
+				
+		      //else all activities in *all activitycategories of this group* done - but we dont know about entire surveyCategory yet.
+			  $isSurveyCategoryCompleteFlag = isSurveyCategoryComplete($userId, $_fid, $is_cf, $surveyCategoryId);	    
+			  if(!$isSurveyCategoryCompleteFlag){
+		    	//die('isactcat compl : true,  isactcat group other cat complete : also true, but issurvcatcomplete: false');	
+			  }else{
+			  	//die('whole surv category IS complete');
+				
+			  	
+			  	// whole surv category is complete. so mark the status  in the userfacil accordingly, (and maybe send email).
+				//  reminder:  fid is either userfacilityid  or customfacilityid, whichever is relevant.  is_cf is 1 or 0.
+		      	markStatus($userId, $_fid, $is_cf, $surveyCategoryId);  //include user_id just for sanity.
+			    // and just go up to the activityCategories page.
+		        header('Location: activityCategories.php#activityCategories'); //was activities.php
+		        exit();
+		        
+		        
+		        
+		        
+			  }
+			}
 	      }
 	    }catch(Exception $e){
 	    	$errorMsg='exception caught in activity: '.$e->getMessage();
