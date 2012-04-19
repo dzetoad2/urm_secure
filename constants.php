@@ -18,7 +18,7 @@ class completionText {
 public static $completionMessage = <<<EOF
 <html> 
   <body > 
-  Thank you for completing the URM Hospital Inpatient survey .We also need time standards for the following:<br/>
+  Thank you for completing the URM Hospital Inpatient survey.  We also need time standards for the following:<br/>
    <ul>
     <li>pulmonary function labs</li>
     <li>blood gas labs</li>
