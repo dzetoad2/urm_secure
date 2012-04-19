@@ -14,7 +14,7 @@ function sendPasswordResetEmail($un){
  if(defined('DEBUG')){
    echo 'DEBUG: new pw is: '.$pw.'<br/>';
  }
- $message = "This is a message from the URM password-reset system.\n  Your new password is: ".$pw."  After logging in,".
+ $message = "This is a message from the URM password-reset system.\n  Your new password is: ".$pw." <br/>After logging in,".
  			" please go to the Create/Modify Profile page from the home screen to set a new password.";
  $from = "URM_Password_Reset--do_not_reply@aarc.org";
  $headers = "From:" . $from;
