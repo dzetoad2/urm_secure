@@ -7,6 +7,7 @@ function sendPasswordResetEmail($un){
   * If the email fails, do nothing (error msg is displayed). 
   * If mail succeeds, we have to get the password hash of that password and store in that user's account.
   */
+ cleanStrForDb($un);
  $to =  $un;        // $un  goes here, not the test email box.
  $subject = "URM password reset";
  $pw = makeRandomPassword();
