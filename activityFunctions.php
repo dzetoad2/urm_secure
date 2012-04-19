@@ -352,7 +352,7 @@ function sendCompletionStatusEmail($userId,$surveyCategoryId){
     $subject = "URM Notification"; 
 	$headers  = "From: $from\r\n"; 
     $headers .= "Content-type: text/html\r\n"; 
-	$message = "test message";  // completionText::$completionMessage;
+	$message =  completionText::$completionMessage;
 	
 	$e = '';
     if(!mail($to,$subject,$message,$headers)){
