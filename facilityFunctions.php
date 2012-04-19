@@ -120,7 +120,7 @@ function getFacilityRow($id){ //based on facility id.
 	}
      $numrows = mysql_num_rows($result);
       if ($numrows != 1){
-	  	$errorMsg='getFacilityRow(): numrows != 1';
+	  	$errorMsg='getFacilityRow(): numrows != 1 ';
 	  	throwMyExc($errorMsg); 
 	  }
 	  $row = mysql_fetch_assoc($result);   //associative. this is first row of the result.

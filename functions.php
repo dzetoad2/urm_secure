@@ -173,6 +173,11 @@ function throwMyExc($em){
 	 	$line = $e->getLine();
 	 	$trace = $e->getTraceAsString();
 	 	$message = '<ERROR>'.$un.', '.$uid.  ', msg: '.$msg.', file: '.$file.', line: '.$line.', trace: '.$trace.'</ERROR>';
+	 	if(isset($_SERVER['HTTP_USER_AGENT'])){
+	 	  $message.= $_SERVER['HTTP_USER_AGENT'];
+	 	}else{
+	 		$message.= ", http_user_agent not set";
+	 	}
 	 	error_log($message);
 	 	sendEmail($_SESSION['userid'], '<ERROR>'.$message.'</ERROR>');
      }
