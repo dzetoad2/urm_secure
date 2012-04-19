@@ -229,7 +229,7 @@ function sendEmail($userId, $message){
 	
 	$e = '';
     if(!mail($to,$subject,$message,$headers)){
-  	  $em .=  'sendcompletionstatusemail():  Failure sending email<br/>';
+  	  $em .=  'sendEmail():  Failure sending email<br/>';
   	  throwMyExc($em);
     }
 	

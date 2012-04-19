@@ -1,6 +1,8 @@
 <?php
 
 require_once('validationFunctions.php');
+require_once('surveyCategoriesFunctions.php');
+
 
 function getActivityData($activityId){
 	$activityId = cleanStrForDb($activityId);
@@ -344,12 +346,13 @@ function sendCompletionStatusEmail($userId,$surveyCategoryId){
 		$em= 'sendcompletionstatusemail:  surv cat id not 1, invalid';
 		throwMyExc($em);
 	}
-	$to = $userId; 
+	$username = getUsername($userId);
+	$to = $username;
     $from = "URM_Notifications--do_not_reply@aarc.org"; 
     $subject = "URM Notification"; 
 	$headers  = "From: $from\r\n"; 
     $headers .= "Content-type: text/html\r\n"; 
-	$message = completionText::$completionMessage;
+	$message = "test message";  // completionText::$completionMessage;
 	
 	$e = '';
     if(!mail($to,$subject,$message,$headers)){

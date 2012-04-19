@@ -22,6 +22,7 @@ function sendPasswordResetEmail($un){
  $e = '';
   if(!mail($to,$subject,$message,$headers)){
   	 $e .=  'Failure sending email<br/>';
+  	 throwMyExc($e);
   }
   if($e==''){
     //succeeded - so now get pw hash of this new pw, and set it in the user table.
