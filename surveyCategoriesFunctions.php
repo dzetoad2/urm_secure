@@ -157,7 +157,7 @@ function dropSurveyAnswers($userId,$fid,$is_cf,$surveyCategoryId){
 	   	 throwMyExc($em);
 	   }
 	   $n = mysql_affected_rows();
-	   if($n!=1){
+	   if($n!=1  && $n!=0){
 	   	$em='dropsurveyanswers: mysql affected rows for the completionstatus update is not 1! invalid. n: '.$n.', q0: '.$q0;
 	   	throwMyExc($em);
 	   }
