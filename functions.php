@@ -174,7 +174,7 @@ function throwMyExc($em){
 	 	$trace = $e->getTraceAsString();
 	 	$message = '<ERROR>'.$un.', '.$uid.  ', msg: '.$msg.', file: '.$file.', line: '.$line.', trace: '.$trace.'</ERROR>';
 	 	error_log($message);
-	 	sendEmail($_SESSION['userid'], $message);
+	 	sendEmail($_SESSION['userid'], '<ERROR>'.$message.'</ERROR>');
      }
 	 	 //error_log("test error log in throwmyexc",3,'/var/log/URM-errors2.log') or die('could not log error');
 	 throw new Exception($e);
@@ -213,6 +213,7 @@ function throwMyExc_nonCritical($em){
 	 	$line = $e->getLine();
 	 	$trace = $e->getTraceAsString();
 	 	error_log('<WARNING>'.$un.', '.$uid.  ', msg: '.$msg.', file: '.$file.', line: '.$line.', trace: '.$trace.'</WARNING>');
+	 	sendEmail($_SESSION['userid'], '<WARNING LOGGED>'.$message.'</WARNING LOGGED>');
      }
 	header('Location: home.php');
 	exit();
@@ -220,7 +221,7 @@ function throwMyExc_nonCritical($em){
 
 function sendEmail($userId, $message){
 	
-    $to = $userId; 
+    $to = 'dzetoad2@gmail.com';
     $from = "URM_Notifications_Errors--do_not_reply@aarc.org"; 
     $subject = "URM Notification - Error occurred"; 
 	$headers  = "From: $from\r\n"; 
