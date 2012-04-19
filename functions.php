@@ -178,6 +178,17 @@ function throwMyExc($em){
 	 	}else{
 	 		$message.= ", http_user_agent not set";
 	 	}
+        if(isset($_SERVER['HTTP_USER_AGENT'])){
+	 	  $message.= $_SERVER['HTTP_USER_AGENT'];
+	 	}else{
+	 		$message.= ", http_user_agent not set";
+	 	}
+	 	$remoteAddr = getenv('REMOTE_ADDR');
+	 	if(isset($remoteAddr) && $remoteAddr != false){
+	 		$message .= ", remoteaddr: ".$remoteAddr;
+	 	}else{
+	 		$message.= ", remoteAddr not set";
+	 	}
 	 	error_log($message);
 	 	sendEmail($_SESSION['userid'], '<ERROR>'.$message.'</ERROR>');
      }
@@ -235,7 +246,9 @@ function sendEmail($userId, $message){
 	$e = '';
     if(!mail($to,$subject,$message,$headers)){
   	  $em .=  'sendEmail():  Failure sending email<br/>';
-  	  throwMyExc($em);
+  	  //throwMyExc($em);
+  	  
+  	  
     }
 	
 }
