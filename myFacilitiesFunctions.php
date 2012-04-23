@@ -44,23 +44,16 @@ function getMyFacilitiesRowsHtml($userId){
 		  $facilityTypeIdClass='facilityTypeId';
 		  $linkGrayClass = ''; //makes it normal and look like clickable
 		  $editCell = '<td ><img class="editFacility" src="images/b_edit.png"/></td>';
-		  $typeLinkStr = '<a class="unclickable" href="" >'.$title.'</a>';
+		  $typeLinkStr = '<a class="unclickable" href="" >'.$title.'</a>';  //**this is actually clickable, thru jquery.
 		}
 		if($row['myOrder'] == 0){  //0 : critical access hospital. should NOT be clickable.
 //			$userFacilityRowClass = 'userFacilityRow';
 			$facilityTypeIdClass = 'grayText';
 			$editCell = '<td ><img class="editFacility" src="images/b_edit.png"/></td>';
 			$typeLinkStr =  $title;
-			
 		}  
 		$dropCell = ''; //<td ><img class="editFacility" src="images/b_drop.png"/></td>';
 
-//		if(defined('DEBUG')){
-//		$o .=  '<tr class="'.$userFacilityRowClass.'" id="'.$row['id'].'" >'.$dropCell.$editCell.'<td>'.$row['id'].'</td><td class="nameCell" id="'.$row['name'].'">'.$row['name'].'</td><td>'.$row['address'].'</td><td>'.$row['city'].
-//  		           '</td><td>'.$row['state'].'</td><td>'.$row['zip'].'</td><td class="'.$facilityTypeIdClass.'" id="'.$row['facilityTypeId'].'"><a class="unclickable '.$linkGrayClass.'" href="" >'.$title.'</a></td><td class="facilityTypeId" id="'.$row['facilityTypeId'].'" >'.$row['facilityTypeId'].'</td></tr>';
-//		}else{
-
-		
 		$o .=  '<tr class="'.$userFacilityRowClass.'" id="'.$row['id'].'" >'.$dropCell.$editCell.'<td class="nameCell" id="'.$row['name'].'">'.$row['name'].'</td><td>'.$row['address'].'</td><td>'.$row['city'].
   		           '</td><td>'.$row['state'].'</td><td>'.$row['zip'].'</td><td class="'.$facilityTypeIdClass.'" id="'.$row['facilityTypeId'].'">'.$typeLinkStr.'</td></tr>';
 		
