@@ -94,7 +94,7 @@ function loggedin(){
 	     //echo('<br/> authtoken: '.$authtoken_in_db);
 	     
 	     //echo('<br/>authtoken != authtoken in db!!!');
-	     sleep(2);
+	     sleep(3);
 	     
 	     header("Location: logout.php");
 	     exit();
@@ -155,6 +155,17 @@ function closeDb(){
    mysql_close($conn);
 }
  
+function logLoginSuccess($un, $pw, $ip){
+	$timezone_str = 'America/Mexico_City';
+	$flag = date_default_timezone_set($timezone_str);
+	if($flag===false){
+	    throw new Exception('date_default_timezone_set has error: timezone str invalid: '.$timezone_str);
+
+	}
+	error_log('<LOGIN_SUCCESS>'.'username: '.$un.', ip: '.$ip.' </LOGIN_SUCCESS>');
+	
+}
+
 
 function logLoginError($un, $pw, $ip){
 	$timezone_str = 'America/Mexico_City';
