@@ -161,7 +161,11 @@ $pediatricIntensiveCareBeds   )
 
 function getCustomFacilityFullBean($customFacilityId){
 	$customFacilityId = cleanStrForDb($customFacilityId);
-	$r = mysql_queryCustom('select * from customFacility where id='.$customFacilityId);
+	$r = mysql_queryCustom('select id, userId, facilityTypeId, name, address,
+	     city, state, zip, phone, isMoreThan26TLB, isCriticalAccessHospital, totalFacilityBeds,
+	     medicalSurgicalIntensiveCareBeds, neoNatalIntensiveCareBeds,
+	     otherIntensiveCareBeds, pediatricIntensiveCareBeds,
+	     completionStatus      from customFacility where id='.$customFacilityId);
 	if($r===false){
 		 throwMyExc('getcustomfacilityfullbean: query fail, customfacilityid: '.$customFacilityId);
 	}
@@ -173,7 +177,7 @@ function getCustomFacilityFullBean($customFacilityId){
 	$cfBean = new CustomFacilityFullBean();
 	$cfBean->facilityTypeId = $row['facilityTypeId'];
 	
-	$cfBean->userId = $row['userid'];
+	$cfBean->userId = $row['userId'];
 	$cfBean->name = $row['name'];
 	$cfBean->address = $row['address'];
 	$cfBean->city = $row['city'];

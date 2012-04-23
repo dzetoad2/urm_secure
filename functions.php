@@ -277,7 +277,7 @@ function throwMyExc_nonCritical($em){
 	 	$line = $e->getLine();
 	 	$trace = $e->getTraceAsString();
 	 	error_log('<WARNING>'.$un.', '.$uid.  ', msg: '.$msg.', file: '.$file.', line: '.$line.', trace: '.$trace.'</WARNING>');
-	 	sendEmail($_SESSION['userid'], '<WARNING LOGGED>'.$message.'</WARNING LOGGED>');
+	 	sendEmail($_SESSION['userid'], '<WARNING NONCRITICAL LOGGED>'.$message.'</WARNING NONCRITICAL LOGGED>');
      }
 	header('Location: home.php');
 	exit();
