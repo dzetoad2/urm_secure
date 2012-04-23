@@ -23,7 +23,26 @@ function createAuthToken($username){  // this will be a function based on userna
 	return $username . sha1($username . '5xuap@'. uniqid());  
 	//"5111115";
 }
-
+function loggedInAdmin(){
+	//
+  if(isset($_COOKIE['username'])){
+    $username = $_COOKIE['username'];
+  }
+  if(isset($_SESSION['username'])){
+    $username = $_SESSION['username'];
+  }
+  if(isset($_SESSION['userid'])){
+    $userId = $_SESSION['userid'];
+  }
+  if($username != "dzetoad2@gmail.com"  &&  $username != "admin"  && $username != "dubbs@aarc.org"){
+  	//we are NOT an admin.
+  	$em="loggedInAdmin:  error - non admin attempt to access admin page";
+  	throwMyExc($em);
+  }
+	
+  return loggedin();
+  
+}
 
 //login check func,  checks  username and userid and authtoken for them.
 function loggedin(){
@@ -44,18 +63,19 @@ function loggedin(){
   }else if(isset($_COOKIE['authtoken'])    ){
     $authtoken = $_COOKIE['authtoken'];
   }
-  
+   
     if(isset($username) && isset($authtoken) && isset($userId)){
 //       echo "2<br/>";
     //check if this authtoken matches the username
     	$username = cleanStrForDb($username);
     	$userId = cleanStrForDb($userId);
-    	
-      $result = mysql_queryCustom("SELECT * FROM user WHERE username='$username' and id=$userId");           //check un/pw against db.
+   	  $q1 = "SELECT * FROM user WHERE username='$username' and id=$userId";
+      $result = mysql_queryCustom($q1);           //check un/pw against db.
       if($result===false){
       	$em='loggedin: query fail';
       	throwMyExc($em);
       }
+      //d i e('q1 was: '.$q1);
 	  if(!isset($result)){ 
 	    $em = "Error checking login against database";
 	    throwMyExc($em);
@@ -64,17 +84,22 @@ function loggedin(){
 	 $row = mysql_fetch_assoc($result);   //associative. this is first row of the result.
 	 $authtoken_in_db = $row['authtoken'];
 	 if($authtoken != $authtoken_in_db){
-	     //authtoken doesnt match - kick them out.
+	 	 //authtoken doesnt match - kick them out.
+	 	 //delete the authtoken cookie! wipe out authoken in db for this user
+	 	 
+	 	 //d i e('authtkn != authtkn in db.  authtoken: '.$authtoken.', authtkn in db: '.$authtoken_in_db);
+	 	 
 	     //   (" The authtoken from session or cookie does not match authtoken in db entry! you are kicked out!");
 	     //echo('<br/> authtoken: '.$authtoken);
 	     //echo('<br/> authtoken: '.$authtoken_in_db);
 	     
 	     //echo('<br/>authtoken != authtoken in db!!!');
 	     sleep(2);
+	     
 	     header("Location: logout.php");
 	     exit();
 	 }
-//	 echo "4<br/>"; 
+	  
 	 //authtoken matches. now check expiry.
 	 $timestamp_in_db = $row['timestamp']; //this is the timestamp of expiry
 	 if(!isset($timestamp_in_db)){
@@ -84,7 +109,6 @@ function loggedin(){
 	 }
 	 //DateTimeZone object as 2nd param?
 	 $dateOfExpiry = new DateTime('now',new DateTimeZone('America/Mexico_City')); //'now'
-//	 echo "5<br/>";
 	 $timezone_str = 'America/Mexico_City';
 	 $flag = date_default_timezone_set($timezone_str);
 	 if($flag===false){
@@ -97,9 +121,10 @@ function loggedin(){
 	 $date = new DateTime("now",new DateTimeZone('America/Mexico_City'));
 	 $current_timestamp = $date->getTimestamp();
 //	 echo "7<br/>";
+	  
 	 if($current_timestamp > $expiry){
-	   //we passed expiry! so die.
-	   //die ('Timestamp has expired. This is possibly a system error. <br/> : <a href="logout.php">Go to the Login page to log in.</a>');
+	   //we passed expiry! so d i e.
+	   //d i e ('Timestamp has expired. This is possibly a system error. <br/> : <a href="logout.php">Go to the Login page to log in.</a>');
 	   header('Location: logout.php');     //this was a hack todo this, may need to analyze what's really going on.
 	   exit();
 	 }else{
@@ -107,11 +132,23 @@ function loggedin(){
 	   $loggedin = TRUE;
 	   updateTimestamp($username);
 	 }
+	  
+	 
 	 //echo "current timestamp: (what time it is RIGHT NOW) ".$current_timestamp."<br/>";   
 //	   echo "expiry timestamp: (the expiry date in the database plus the interval) ".$expiry."<br/>";
     }
     return $loggedin;
 }
+
+function wipeOutAuthtoken($username){
+    $result = mysql_queryCustom("UPDATE user  set  authtoken='' WHERE   username='$username'  ");           //update authtoken in db.
+ 	if($result===FALSE){
+ 	   $errorMsg="wipeoutauthtoken:  Error wiping out authtoken for ".$username.", please contact the adinistrator.";
+ 	   throwMyExc($errorMsg);
+ 	   exit();
+ 	}
+}
+
 
 
 function closeDb(){
@@ -192,7 +229,7 @@ function throwMyExc($em){
 	 	error_log($message);
 	 	sendEmail($_SESSION['userid'], '<ERROR>'.$message.'</ERROR>');
      }
-	 	 //error_log("test error log in throwmyexc",3,'/var/log/URM-errors2.log') or die('could not log error');
+	 	 //error_log("test error log in throwmyexc",3,'/var/log/URM-errors2.log') or d i e('could not log error');
 	 throw new Exception($e);
 	 //$e->getMessage()
 	 /*
@@ -243,7 +280,7 @@ function sendEmail($userId, $message){
 	$headers  = "From: $from\r\n"; 
     $headers .= "Content-type: text/html\r\n"; 
 	
-	$e = '';
+	$em = '';
     if(!mail($to,$subject,$message,$headers)){
   	  $em .=  'sendEmail():  Failure sending email<br/>';
   	  //throwMyExc($em);
