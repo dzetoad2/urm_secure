@@ -27,6 +27,7 @@ function sendPasswordResetEmail($un){
   if($e==''){
     //succeeded - so now get pw hash of this new pw, and set it in the user table.
     $e .= updatePasswordForUserAccount_Username($un,$pw);
+    error_log('<RESET_PW_SUCCESS>'.'mail succeeded and pw update succeeded. username: '.$un.', ip: '.$ip.' </RESET_PW_SUCCESS>');
   }
   return $e;
 }

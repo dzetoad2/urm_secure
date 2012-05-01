@@ -1,11 +1,10 @@
 <?php
 namespace urm\urm_secure\DAO;
 
-class surveyCategoryRowsDAO {
+ 
+class surveyCategoryRowDAO {
 	
 	public 
 	 $o,$atLeastOneSurveyCategoryIsComplete;      //field data
-	
 	 
-	
 }

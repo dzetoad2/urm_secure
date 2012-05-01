@@ -1,5 +1,10 @@
  <?php 
+require_once('DAO/surveyCategoryStatsRowListDAO.php'); 
+use urm\urm_secure\DAO\surveyCategoryStatsRowListDAO;
  
+require_once('DAO/userStatsRowListDAO.php');
+use urm\urm_secure\DAO\userStatsRowListDAO;
+
 function getTotalNumAnsweredActivities($userId){
 
 		//table is  userid, username, totalnumactivitiesanswered.
@@ -13,12 +18,21 @@ function getTotalNumAnsweredActivities($userId){
 //output: an integer string.
 function getTotalFacilitiesRegistered($userId){
 		$userId = cleanStrForDb($userId);
-		$r = mysql_queryCustom("select count(*) as c from userFacility where userid=".$userId);
+		$q = "select count(*) as c from userFacility where userid=".$userId;
+		$r = mysql_queryCustom($q);
     	$row = mysql_fetch_array($r);
 		$count = $row['c'];
 		return $count;
-
 }
+function getTotalCustomFacilitiesRegistered($userId){
+		$userId = cleanStrForDb($userId);
+		$q = "select count(*) as c from customFacility where userid = ".$userId;
+		$r = mysql_queryCustom($q);
+		$row = mysql_fetch_array($r);
+		$count = $row['c'];
+		return $count;
+}
+
 
 function getStats1RowsHtml(){
 	//loop through all users in user table.
@@ -33,6 +47,42 @@ function getStats1RowsHtml(){
 
 }
 
-
+function getStats2RowsHtml(){
+	/*
+	 * col:  surv type (name),     Total # of this *complete* by any user.
+	 * alg:
+	 *  1. get cols from surveyCategory and user.   has int and description.  we'l output the title
+	 *  2. for each col id,  get the total # of complete surveys among all users. 
+	 *      (in surveyCategories functions). 
+	 *      Breakdown:
+	 *		 - get list of user ids.
+	 *       - get total # of answers of each surveyCategory.
+	 *       - in surveyanswer,  check # of answers with a given surveyCategory id for each user.
+	 *      
+	 *      
+	 */
+	//$q0 = "select id from user where 1";
+	//$r0 = mysql_queryCustom($q0);
+	$sd = new surveyCategoryStatsRowListDAO(); //autopopulates array        get the survey category info.  id and title
+	$ud = new userStatsRowListDAO();  //autopopulates array                 get the user info.  id and username
+	//return $sd->toRowsHtml(); //works fine
+	foreach($sd->list as $sdrow){
+		$surveyCategoryTitle = $sdrow->title;
+		$surveyCategoryId = $sdrow->id;
+		$count = 0;
+		foreach($ud->list as $udrow){
+			$userId = $udrow->id;
+			//get count of surveyanswers for the given userid and surveycategory.
+			//if(true ===  isSurveyCategoryComplete($userId, $facilityId,$isCustomFacility,   $surveyCategoryId   )){
+			//	$count++;
+			//}
+			 
+			
+		}
+		
+	}
+	
+	
+}
  																	//$row = mysql_fetch_assoc($r);  //what does this do? was in sessionstatefunctions hmm.
     	
