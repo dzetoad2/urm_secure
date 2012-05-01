@@ -2,7 +2,7 @@
 //set_include_path(get_include_path().":/usr/local/www/apache22/data/u rm/");  // this for the freebsd system only
 
 
-if($_SESSION['username'] == "dzetoad2@gmail.com"){
+if(  (isset($_SESSION['username]']))    && $_SESSION['username'] == "dzetoad2@gmail.com"){
   define('debugFillOutAction',1);    
 }
 

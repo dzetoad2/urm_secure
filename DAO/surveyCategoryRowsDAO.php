@@ -2,7 +2,7 @@
 namespace urm\urm_secure\DAO;
 
  
-class surveyCategoryRowDAO {
+class surveyCategoryRowsDAO {
 	
 	public 
 	 $o,$atLeastOneSurveyCategoryIsComplete;      //field data
