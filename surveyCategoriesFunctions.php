@@ -1,8 +1,8 @@
 <?php
 
 require_once('activitiesSupplementalFunctions.php');
-require_once('DAO/surveyCategoryRowsDAO.php');
 
+require_once('DAO/surveyCategoryRowsDAO.php');
 use urm\urm_secure\DAO\surveyCategoryRowsDAO;
 
 
