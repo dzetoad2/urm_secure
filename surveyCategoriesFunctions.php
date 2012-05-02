@@ -451,22 +451,10 @@ function getFacilityIdFromUserFacility($userFacilityId){
   
 }
 
-//get a username from an id
-function getUsername($userId){
- $userId = trim($userId);
- if($userId==='')
-   return '';
- $userId = cleanStrForDb($userId);
- $r = mysql_queryCustom("select username from user where id = ".$userId);
- if($r===false)
-  throwMyExc('getUsername: query failed.');
- if(mysql_num_rows($r) === 0){
-  return '';
- }elseif(mysql_num_rows($r) === 1){
-  $row = mysql_fetch_array($r);
-  return $row['username'];
- }
-}
+
+
+
+
 //get a userid from username
 function getUserId($un){
  $un = cleanStrForDb($un);

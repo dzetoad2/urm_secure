@@ -1,9 +1,6 @@
 <?php
 namespace urm\urm_secure\DAO;
 
-require_once('surveyCategoryStatsRowDAO.php');
-
-use urm\urm_secure\DAO\surveyCategoryStatsRowDAO;
 
 /*
  * gets the full set of surveycategory rows. 
@@ -33,4 +30,24 @@ class surveyCategoryStatsRowListDAO{
 		//		$o .= 'size: '.count($this->list);
 		return $o;
 	}
+}
+
+
+
+class surveyCategoryStatsRowDAO {
+	
+	public 
+	 $id, $title;
+	 
+	function __construct($in_id, $in_title){
+		$this->id = $in_id;
+		$this->title = $in_title;
+	}
+	
+	function toRowHtml(){
+		$o= '<tr><td>'.$this->id.'</td><td>'.$this->title.'</td></tr>';
+		return $o;
+	}
+	
+	
 }

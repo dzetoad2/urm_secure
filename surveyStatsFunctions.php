@@ -1,4 +1,7 @@
- <?php 
+ <?php
+
+require_once('activitiesSupplementalFunctions.php');
+ 
 require_once('DAO/surveyCategoryStatsRowListDAO.php'); 
 use urm\urm_secure\DAO\surveyCategoryStatsRowListDAO;
  
@@ -65,24 +68,62 @@ function getStats2RowsHtml(){
 	//$r0 = mysql_queryCustom($q0);
 	$sd = new surveyCategoryStatsRowListDAO(); //autopopulates array        get the survey category info.  id and title
 	$ud = new userStatsRowListDAO();  //autopopulates array                 get the user info.  id and username
+	
+	$o = '';
 	//return $sd->toRowsHtml(); //works fine
+	//get count of surveyanswers for the given userid and surveycategory.
 	foreach($sd->list as $sdrow){
 		$surveyCategoryTitle = $sdrow->title;
 		$surveyCategoryId = $sdrow->id;
 		$count = 0;
 		foreach($ud->list as $udrow){
 			$userId = $udrow->id;
-			//get count of surveyanswers for the given userid and surveycategory.
-			//if(true ===  isSurveyCategoryComplete($userId, $facilityId,$isCustomFacility,   $surveyCategoryId   )){
-			//	$count++;
-			//}
-			 
+			if( isset($udrow->facilityIdArr)  &&  count($udrow->facilityIdArr) > 0  )  {  
+				foreach($udrow->facilityIdArr as $facilityId){
+				  if(true ===  isSurveyCategoryComplete($userId, $facilityId, 0,   $surveyCategoryId   )){
+					//echo 'complete: userid '.$userId.', fid: '.$facilityId.', normal facil, sur category: '.$surveyCategoryTitle.'<br/>';
+				  	$count++;
+				  }
+				}
+			}  // if facil arr is valid
+			if( isset($udrow->customFacilityIdArr)  &&  count($udrow->customFacilityIdArr) > 0  )  {  
+				foreach($udrow->customFacilityIdArr as $customFacilityId){
+				  if(true ===  isSurveyCategoryComplete($userId, $customFacilityId, 1,   $surveyCategoryId   )){
+					//echo 'complete: userid '.$userId.', fid: '.$facilityId.', custom facil, sur category: '.$surveyCategoryTitle.'<br/>';
+				  	$count++;
+				  }
+				}
+			}
+			// surveyanswer fields:    userId  facilityId  isCustomFacility  isCustomActivity
+			/*
+			if(true ===  isSurveyCategoryComplete($userId, $facilityId,$isCustomFacility,   $surveyCategoryId   )){
+				$count++;
+			}
+			*/
 			
-		}
+			
 		
+		}
+		//echo 'surv category id: '.$surveyCategoryId. ', finished_count: '.$count.'<br/>';
+		$o .= '<tr><td>'.$surveyCategoryTitle.'</td><td>'.$count.'</td></tr>';
 	}
-	
+	return $o;
 	
 }
  																	//$row = mysql_fetch_assoc($r);  //what does this do? was in sessionstatefunctions hmm.
-    	
+
+
+
+
+/*
+ * we want the total count of surveys completed, for each type of the 7 surveys (surveycategories).
+ * 
+ * get info for normal facilities and custom facilities,  which is the userFacility and the customFacility tables' ids , as those are in the surveyAnswer table.
+ * each user has arrays of their normalfacil and customfacil.  check*.
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */

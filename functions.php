@@ -34,14 +34,42 @@ function loggedInAdmin(){
   if(isset($_SESSION['userid'])){
     $userId = $_SESSION['userid'];
   }
-  if($username != "dzetoad2@gmail.com"  &&  $username != "admin"  && $username != "dubbs@aarc.org"){
-  	//we are NOT an admin.
+  
+  if(!isAdmin($userId)){
   	$em="loggedInAdmin:  error - non admin attempt to access admin page";
   	throwMyExc($em);
   }
-	
   return loggedin();
-  
+}
+
+function isAdmin($userId){
+	$un = getUsername($userId);
+	if(
+	     $un == "admin" ||
+	     $un == "a@a.com" || 
+	     $un == "dzetoad2@gmail.com" ||
+	     $un == "dubbs@aarc.org" ||
+	     $un == "nelson@aarc.org"){
+	     	return true;
+	     }
+	return false;
+}
+
+//get a username from an id
+function getUsername($userId){
+ $userId = trim($userId);
+ if($userId==='')
+   return '';
+ $userId = cleanStrForDb($userId);
+ $r = mysql_queryCustom("select username from user where id = ".$userId);
+ if($r===false)
+  throwMyExc('getUsername: query failed.');
+ if(mysql_num_rows($r) === 0){
+  return '';
+ }elseif(mysql_num_rows($r) === 1){
+  $row = mysql_fetch_array($r);
+  return $row['username'];
+ }
 }
 
 //login check func,  checks  username and userid and authtoken for them.
