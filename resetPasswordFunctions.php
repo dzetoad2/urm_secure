@@ -7,6 +7,10 @@ function sendPasswordResetEmail($un){
   * If the email fails, do nothing (error msg is displayed). 
   * If mail succeeds, we have to get the password hash of that password and store in that user's account.
   */
+ $ip = 'no ip available - session var not set';
+ if(isset($_SERVER) && isset($_SERVER['REMOTE_ADDR'])){
+ 	$ip = $_SERVER['REMOTE_ADDR'];
+ }
  cleanStrForDb($un);
  $to =  $un;        // $un  goes here, not the test email box.
  $subject = "URM password reset";
