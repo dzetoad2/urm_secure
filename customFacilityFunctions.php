@@ -45,6 +45,10 @@ $pediatricIntensiveCareBeds   )
 	$neoNatalIntensiveCareBeds = cleanStrForDb($neoNatalIntensiveCareBeds);
 	$otherIntensiveCareBeds = cleanStrForDb($otherIntensiveCareBeds);
 	$pediatricIntensiveCareBeds = cleanStrForDb($pediatricIntensiveCareBeds);
+	
+	if($state == "Other"){
+		$state = "--";
+	}
 
 	//write to db.
 	 $res = mysql_queryCustom("INSERT INTO customFacility (userid, facilityTypeId, name, address,city,state,zip,
@@ -231,6 +235,8 @@ function getMyCustomFacilitiesRowsHtml($userId){
 		if(!$title ||  trim($title=="")){
 		  $title = "UNK";
 		}
+		$state = $row['state'];
+		if($state == '--') $state = "Other";
 		$customFacilityTypeIdClass = 'grayText';
 		$typeLink = $title;
 		$facilityTypeId = $row['facilityTypeId'];
@@ -241,7 +247,7 @@ function getMyCustomFacilitiesRowsHtml($userId){
 		}
 		$editCell = '<td ><img class="editCustomFacility" src="images/b_edit.png"/></td>';
 		$o .=  '<tr class="customFacilityRow" id="'.$row['id'].'">'.$editCell.'<td class="nameCell" id="'.$row['name'].'">'.$row['name'].'</td><td>'.$row['address'].'</td><td>'.$row['city'].
-  		           '</td><td>'.$row['state'].'</td><td>'.$row['zip'].'</td><td class="'.$customFacilityTypeIdClass.'" id="'.$row['facilityTypeId'].'">'.$typeLink.'</td></tr>';
+  		           '</td><td>'.$state.'</td><td>'.$row['zip'].'</td><td class="'.$customFacilityTypeIdClass.'" id="'.$row['facilityTypeId'].'">'.$typeLink.'</td></tr>';
 		 
 	}
 	return $o;
@@ -281,6 +287,9 @@ function getStatesRowsHtml($state){
 		if($state==$row['name']){
 			$selStr='selected="selected"';
 			$stateFound=true;
+		}
+	    if($row['name'] == '--'){
+			$row['name'] = 'Other';
 		}
 		$o.= '<option id="'.$row['id'].'" '.$selStr.' >'.$row['name'].'</option>';
 		$selStr='';
