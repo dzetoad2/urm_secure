@@ -44,7 +44,7 @@ function getStats1RowsHtml(){
 	while($row = mysql_fetch_array($r)){
 		$userId = $row['id'];
 		$username = $row['username'];
-		$o.='<tr><td>' . $userId.'</td><td>' .$username.'</td><td>' .getTotalFacilitiesRegistered($userId). '</td><td>'. getTotalNumAnsweredActivities($userId). '</tr>';
+		$o.='<tr><td>' . $userId.'</td><td>' .$username.'</td><td>' .getTotalFacilitiesRegistered($userId). '</td><td>'. getTotalCustomFacilitiesRegistered($userId). '</td><td>'.getTotalNumAnsweredActivities($userId). '</tr>';
 	}
 	return $o;
 
