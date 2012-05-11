@@ -180,6 +180,62 @@ function getStats3RowsHtml(){
 	
 }
 
+function getStats4RowsHtml(){
+/* alg:  for each surv cat, loop through all users to find who have started but not completed that cat.  
+ * 
+ */
+	$sd = new surveyCategoryStatsRowListDAO(); //autopopulates array        get the survey category info.  id and title
+	$ud = new userStatsRowListDAO();  //autopopulates array                 get the user info.  id and username
+	
+	$o = '';
+	//return $sd->toRowsHtml(); //works fine
+	//get count of surveyanswers for the given userid and surveycategory.
+	foreach($sd->list as $sdrow){
+		$surveyCategoryTitle = $sdrow->title;
+		$surveyCategoryId = $sdrow->id;
+		$sdActivityTotalCount =  $sdrow->activityTotalCount;
+		$count = 0;
+		foreach($ud->list as $udrow){
+			$userId = $udrow->id;
+			
+			if( isset($udrow->facilityIdArr)  &&  count($udrow->facilityIdArr) > 0  )  {  
+				foreach($udrow->facilityIdArr as $facilityId){
+				  $facilityName = $udrow::getFacilityName($facilityId, 0);
+				  if(true ===  isSurveyCategoryStarted($userId, $facilityId, 0, $surveyCategoryId)    ){
+				  	 if(false ===  isSurveyCategoryComplete($userId, $facilityId, 0, $surveyCategoryId   )){
+				  	 	$isComplete = "Incomplete";
+				  	 	$isCompleteHighlight = "highlight";
+				  	 }else{
+				  	 	$isComplete = "Complete";
+				  	 	$isCompleteHighlight = "";
+				  	 }
+					//echo 'complete: userid '.$userId.', fid: '.$facilityId.', normal facil, sur category: '.$surveyCategoryTitle.'<br/>';
+				  	 $o .= '<tr><td>'.$surveyCategoryTitle.'</td><td>'.$udrow->username.'</td><td>'. $facilityName.'</td><td>Not Custom</td><td class="'.$isCompleteHighlight.'">'.getTotalNumAnsweredActivitiesInSurveyCategoryForFacility($userId, $surveyCategoryId, $facilityId, 0).'</td><td >'.$sdActivityTotalCount.'</td></tr>';
+				  }
+				}
+			}  // if facil arr is valid
+			if( isset($udrow->customFacilityIdArr)  &&  count($udrow->customFacilityIdArr) > 0  )  {  
+				foreach($udrow->customFacilityIdArr as $customFacilityId){
+				  $customFacilityName = $udrow::getFacilityName($customFacilityId, 1);
+				  if(true ===  isSurveyCategoryStarted($userId, $customFacilityId, 1, $surveyCategoryId)    ){
+				  	if(false ===  isSurveyCategoryComplete($userId, $customFacilityId, 1, $surveyCategoryId   )){
+				  		$isComplete = "Incomplete";
+				  		$isCompleteHighlight = "highlight";
+				  	}else{
+				  		$isComplete = "Complete";
+				  		$isCompleteHighlight = "";
+				  	}
+					//echo 'complete: userid '.$userId.', fid: '.$facilityId.', custom facil, sur category: '.$surveyCategoryTitle.'<br/>';
+				  	 $o .= '<tr><td>'.$surveyCategoryTitle.'</td><td>'. $udrow->username.'</td><td>'.$customFacilityName.'</td><td>Yes (is Custom)</td><td class="'.$isCompleteHighlight.'">'.getTotalNumAnsweredActivitiesInSurveyCategoryForFacility($userId, $surveyCategoryId, $customFacilityId, 1).'</td><td >'.$sdActivityTotalCount.'</td></tr>';
+				  }
+				}
+			}
+		}
+		
+	}//outside foreach
+	return $o;	
+	
+}
 
  																	//$row = mysql_fetch_assoc($r);  //what does this do? was in sessionstatefunctions hmm.
 
