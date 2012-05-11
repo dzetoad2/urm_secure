@@ -96,6 +96,34 @@ class userStatsRowDAO {
 	function toDebugText(){
 		$o=$this->id.', '. $this->username.'<br/>';
 	}
+
 	
+	
+	public static function getFacilityName($facilityId, $isCustomFacility){
+		if($isCustomFacility===0){
+			//userFacility table
+			$q = 'select facility.name from facility
+				  join userFacility
+				  on facility.id = userFacility.facilityId
+				  where userFacility.id = '.$facilityId;
+			
+		}elseif($isCustomFacility===1){
+			//customFacility table
+			$q = 'select name from customFacility
+				  where id = '.$facilityId;
+		}else{
+			$em="userStatsRowDao:: getfacilityname,  iscustomfacility is neither 0 nor 1";
+			throwMyExc($em);
+		}
+		$r = mysql_queryCustom($q);
+		if($r===false){
+			$em="userStatsRowDao:: getfacilityname,  q fail, q: ".$q;
+			throwMyExc($em);
+		}
+		$row = mysql_fetch_array($r);
+		$fName = $row['name'];
+		return $fName;
+	
+	}
 	
 }

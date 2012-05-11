@@ -4,9 +4,10 @@ require_once('activitiesSupplementalFunctions.php');
  
 require_once('DAO/surveyCategoryStatsRowListDAO.php'); 
 use urm\urm_secure\DAO\surveyCategoryStatsRowListDAO;
- 
 require_once('DAO/userStatsRowListDAO.php');
 use urm\urm_secure\DAO\userStatsRowListDAO;
+require_once('DAO/userStatsStartedButIncompleteDAO.php');
+use urm\urm_secure\DAO\userStatsStartedButIncompleteDAO;
 
 function getTotalNumAnsweredActivities($userId){
 
@@ -17,6 +18,33 @@ function getTotalNumAnsweredActivities($userId){
 		return $c;
     	
 }
+
+/* table stuf:  surveyAnswer has activityId,    activity  has activityCategoryId,   activityCategory  has surveyCategoryId.
+ * 
+ */
+function getTotalNumAnsweredActivitiesInSurveyCategoryForFacility($userId, $surveyCategoryId, $fid, $isCustomFacility){
+		$q =  
+		 "select count(*) as c 
+		  from surveyAnswer join activity 
+		  on surveyAnswer.activityId = activity.id
+		  join activityCategory
+		  on activity.activityCategoryId = activityCategory.id
+		  join surveyCategory
+		  on activityCategory.surveyCategoryId = surveyCategory.id
+		     where surveyAnswer.userId = ".$userId." and surveyCategory.id = ".$surveyCategoryId.
+		    " and surveyAnswer.facilityId = ".$fid." and surveyAnswer.isCustomFacility = ".$isCustomFacility.
+		    " and isCustomActivity = 0 "		
+		;
+		$r = mysql_queryCustom($q);
+	    
+		if($r=== false){
+			die('error: gettotalnumansweredactivitiesinsurveycategoryforfacility: query fail, q: '.$q);
+		}
+    	$row = mysql_fetch_array($r);
+		$c = $row['c'];
+		return $c;
+}
+
 
 //output: an integer string.
 function getTotalFacilitiesRegistered($userId){
@@ -61,8 +89,6 @@ function getStats2RowsHtml(){
 	 *		 - get list of user ids.
 	 *       - get total # of answers of each surveyCategory.
 	 *       - in surveyanswer,  check # of answers with a given surveyCategory id for each user.
-	 *      
-	 *      
 	 */
 	//$q0 = "select id from user where 1";
 	//$r0 = mysql_queryCustom($q0);
@@ -110,6 +136,51 @@ function getStats2RowsHtml(){
 	return $o;
 	
 }
+
+function getStats3RowsHtml(){
+/* alg:  for each surv cat, loop through all users to find who have started but not completed that cat.  
+ * 
+ */
+	$sd = new surveyCategoryStatsRowListDAO(); //autopopulates array        get the survey category info.  id and title
+	$ud = new userStatsRowListDAO();  //autopopulates array                 get the user info.  id and username
+	
+	$o = '';
+	//return $sd->toRowsHtml(); //works fine
+	//get count of surveyanswers for the given userid and surveycategory.
+	foreach($sd->list as $sdrow){
+		$surveyCategoryTitle = $sdrow->title;
+		$surveyCategoryId = $sdrow->id;
+		$sdActivityTotalCount =  $sdrow->activityTotalCount;
+		$count = 0;
+		foreach($ud->list as $udrow){
+			$userId = $udrow->id;
+			
+			if( isset($udrow->facilityIdArr)  &&  count($udrow->facilityIdArr) > 0  )  {  
+				foreach($udrow->facilityIdArr as $facilityId){
+				  $facilityName = $udrow::getFacilityName($facilityId, 0);
+				  if(true ===  isSurveyCategoryStarted($userId, $facilityId, 0, $surveyCategoryId)  &&    false ===  isSurveyCategoryComplete($userId, $facilityId, 0, $surveyCategoryId   )){
+					//echo 'complete: userid '.$userId.', fid: '.$facilityId.', normal facil, sur category: '.$surveyCategoryTitle.'<br/>';
+				  	 $o .= '<tr><td>'.$surveyCategoryTitle.'</td><td>'.$udrow->username.'</td><td>'. $facilityName.'</td><td>Not Custom</td><td>'.getTotalNumAnsweredActivitiesInSurveyCategoryForFacility($userId, $surveyCategoryId, $facilityId, 0).'</td><td>'.$sdActivityTotalCount.'</td></tr>';
+				  }
+				}
+			}  // if facil arr is valid
+			if( isset($udrow->customFacilityIdArr)  &&  count($udrow->customFacilityIdArr) > 0  )  {  
+				foreach($udrow->customFacilityIdArr as $customFacilityId){
+				  $customFacilityName = $udrow::getFacilityName($customFacilityId, 1);
+				  if(true ===  isSurveyCategoryStarted($userId, $customFacilityId, 1, $surveyCategoryId)  && false ===  isSurveyCategoryComplete($userId, $customFacilityId, 1, $surveyCategoryId   )){
+					//echo 'complete: userid '.$userId.', fid: '.$facilityId.', custom facil, sur category: '.$surveyCategoryTitle.'<br/>';
+				  	 $o .= '<tr><td>'.$surveyCategoryTitle.'</td><td>'. $udrow->username.'</td><td>'.$customFacilityName.'</td><td>Yes (is Custom)</td><td>'.getTotalNumAnsweredActivitiesInSurveyCategoryForFacility($userId, $surveyCategoryId, $customFacilityId, 1).'</td><td>'.$sdActivityTotalCount.'</td></tr>';
+				  }
+				}
+			}
+		}
+		
+	}//outside foreach
+	return $o;	
+	
+}
+
+
  																	//$row = mysql_fetch_assoc($r);  //what does this do? was in sessionstatefunctions hmm.
 
 
