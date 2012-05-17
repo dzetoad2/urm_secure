@@ -1,7 +1,8 @@
 <?php
 namespace urm\urm_secure\DAO;
+require_once('facilityInfoDAO.php');
 
-
+use urm\urm_secure\DAO\facilityInfoDAO;
 /*
  * gets the full set of surveycategory rows. 
  */
@@ -55,8 +56,10 @@ class userStatsRowDAO {
 	function __construct($in_id, $in_username){
 		$this->id = $in_id;
 		$this->username = $in_username;
-		$this->populateFacilityIdArr();
-		$this->populateCustomFacilityIdArr();
+		if($in_username != "dzetoad2@gmail.com"  && $in_username != "a@a.com"){
+		  $this->populateFacilityIdArr();
+		  $this->populateCustomFacilityIdArr();
+		}
 	}
 	function populateFacilityIdArr(){
 		$q="select id, facilityId from userFacility where userId = ".$this->id;
@@ -99,17 +102,17 @@ class userStatsRowDAO {
 
 	
 	
-	public static function getFacilityName($facilityId, $isCustomFacility){
+	public static function getFacilityInfo($facilityId, $isCustomFacility){
 		if($isCustomFacility===0){
 			//userFacility table
-			$q = 'select facility.name from facility
+			$q = 'select facility.name, facility.state from facility
 				  join userFacility
 				  on facility.id = userFacility.facilityId
 				  where userFacility.id = '.$facilityId;
 			
 		}elseif($isCustomFacility===1){
 			//customFacility table
-			$q = 'select name from customFacility
+			$q = 'select name, state from customFacility
 				  where id = '.$facilityId;
 		}else{
 			$em="userStatsRowDao:: getfacilityname,  iscustomfacility is neither 0 nor 1";
@@ -122,7 +125,10 @@ class userStatsRowDAO {
 		}
 		$row = mysql_fetch_array($r);
 		$fName = $row['name'];
-		return $fName;
+		$fState = $row['state'];
+		$fInfoDao = new facilityInfoDAO($fName,$fState);
+		
+		return $fInfoDao;
 	
 	}
 	

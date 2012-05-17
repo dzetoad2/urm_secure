@@ -157,19 +157,23 @@ function getStats3RowsHtml(){
 			
 			if( isset($udrow->facilityIdArr)  &&  count($udrow->facilityIdArr) > 0  )  {  
 				foreach($udrow->facilityIdArr as $facilityId){
-				  $facilityName = $udrow::getFacilityName($facilityId, 0);
+				  $fInfoDao = $udrow::getFacilityInfo($facilityId, 0);
+				  $facilityName = $fInfoDao->getName();
+				  $facilityState = $fInfoDao->getState();
 				  if(true ===  isSurveyCategoryStarted($userId, $facilityId, 0, $surveyCategoryId)  &&    false ===  isSurveyCategoryComplete($userId, $facilityId, 0, $surveyCategoryId   )){
 					//echo 'complete: userid '.$userId.', fid: '.$facilityId.', normal facil, sur category: '.$surveyCategoryTitle.'<br/>';
-				  	 $o .= '<tr><td>'.$surveyCategoryTitle.'</td><td>'.$udrow->username.'</td><td>'. $facilityName.'</td><td>Not Custom</td><td>'.getTotalNumAnsweredActivitiesInSurveyCategoryForFacility($userId, $surveyCategoryId, $facilityId, 0).'</td><td>'.$sdActivityTotalCount.'</td></tr>';
+				  	 $o .= '<tr><td>'.$surveyCategoryTitle.'</td><td>'.$udrow->username.'</td><td>'. $facilityName.'</td><td>'.$facilityState.'</td><td>Not Custom</td><td>'.getTotalNumAnsweredActivitiesInSurveyCategoryForFacility($userId, $surveyCategoryId, $facilityId, 0).'</td><td>'.$sdActivityTotalCount.'</td></tr>';
 				  }
 				}
 			}  // if facil arr is valid
 			if( isset($udrow->customFacilityIdArr)  &&  count($udrow->customFacilityIdArr) > 0  )  {  
 				foreach($udrow->customFacilityIdArr as $customFacilityId){
-				  $customFacilityName = $udrow::getFacilityName($customFacilityId, 1);
+				  $cfInfoDao = $udrow::getFacilityInfo($customFacilityId, 1);
+				  $customFacilityName =  $cfInfoDao->getName();
+				  $customFacilityState = $cfInfoDao->getState();
 				  if(true ===  isSurveyCategoryStarted($userId, $customFacilityId, 1, $surveyCategoryId)  && false ===  isSurveyCategoryComplete($userId, $customFacilityId, 1, $surveyCategoryId   )){
 					//echo 'complete: userid '.$userId.', fid: '.$facilityId.', custom facil, sur category: '.$surveyCategoryTitle.'<br/>';
-				  	 $o .= '<tr><td>'.$surveyCategoryTitle.'</td><td>'. $udrow->username.'</td><td>'.$customFacilityName.'</td><td>Yes (is Custom)</td><td>'.getTotalNumAnsweredActivitiesInSurveyCategoryForFacility($userId, $surveyCategoryId, $customFacilityId, 1).'</td><td>'.$sdActivityTotalCount.'</td></tr>';
+				  	 $o .= '<tr><td>'.$surveyCategoryTitle.'</td><td>'. $udrow->username.'</td><td>'.$customFacilityName.'</td><td>'.$customFacilityState.'</td><td>Yes (is Custom)</td><td>'.getTotalNumAnsweredActivitiesInSurveyCategoryForFacility($userId, $surveyCategoryId, $customFacilityId, 1).'</td><td>'.$sdActivityTotalCount.'</td></tr>';
 				  }
 				}
 			}
@@ -200,7 +204,7 @@ function getStats4RowsHtml(){
 			
 			if( isset($udrow->facilityIdArr)  &&  count($udrow->facilityIdArr) > 0  )  {  
 				foreach($udrow->facilityIdArr as $facilityId){
-				  $facilityName = $udrow::getFacilityName($facilityId, 0);
+				  $facilityName = $udrow::getFacilityInfo($facilityId, 0);
 				  if(true ===  isSurveyCategoryStarted($userId, $facilityId, 0, $surveyCategoryId)    ){
 				  	 if(false ===  isSurveyCategoryComplete($userId, $facilityId, 0, $surveyCategoryId   )){
 				  	 	$isComplete = "Incomplete";
@@ -216,7 +220,7 @@ function getStats4RowsHtml(){
 			}  // if facil arr is valid
 			if( isset($udrow->customFacilityIdArr)  &&  count($udrow->customFacilityIdArr) > 0  )  {  
 				foreach($udrow->customFacilityIdArr as $customFacilityId){
-				  $customFacilityName = $udrow::getFacilityName($customFacilityId, 1);
+				  $customFacilityName = $udrow::getFacilityInfo($customFacilityId, 1);
 				  if(true ===  isSurveyCategoryStarted($userId, $customFacilityId, 1, $surveyCategoryId)    ){
 				  	if(false ===  isSurveyCategoryComplete($userId, $customFacilityId, 1, $surveyCategoryId   )){
 				  		$isComplete = "Incomplete";
@@ -257,19 +261,23 @@ function getStats5RowsHtml(){
 			
 			if( isset($udrow->facilityIdArr)  &&  count($udrow->facilityIdArr) > 0  )  {  
 				foreach($udrow->facilityIdArr as $facilityId){
-				  $facilityName = $udrow::getFacilityName($facilityId, 0);
+				  $fInfoDao = $udrow::getFacilityInfo($facilityId, 0);
+				  $facilityName = $fInfoDao->getName();
+				  $facilityState = $fInfoDao->getState();
 				  if(true ===  isSurveyCategoryStarted($userId, $facilityId, 0, $surveyCategoryId)  &&    true ===  isSurveyCategoryComplete($userId, $facilityId, 0, $surveyCategoryId   )){
 					//echo 'complete: userid '.$userId.', fid: '.$facilityId.', normal facil, sur category: '.$surveyCategoryTitle.'<br/>';
-				  	 $o .= '<tr><td>'.$surveyCategoryTitle.'</td><td>'.$udrow->username.'</td><td>'. $facilityName.'</td><td>Not Custom</td><td>'.getTotalNumAnsweredActivitiesInSurveyCategoryForFacility($userId, $surveyCategoryId, $facilityId, 0).'</td><td>'.$sdActivityTotalCount.'</td></tr>';
+				  	 $o .= '<tr><td>'.$surveyCategoryTitle.'</td><td>'.$udrow->username.'</td><td>'. $facilityName.'</td><td>'.$facilityState.'</td><td>Not Custom</td><td>'.getTotalNumAnsweredActivitiesInSurveyCategoryForFacility($userId, $surveyCategoryId, $facilityId, 0).'</td><td>'.$sdActivityTotalCount.'</td></tr>';
 				  }
 				}
 			}  // if facil arr is valid
 			if( isset($udrow->customFacilityIdArr)  &&  count($udrow->customFacilityIdArr) > 0  )  {  
 				foreach($udrow->customFacilityIdArr as $customFacilityId){
-				  $customFacilityName = $udrow::getFacilityName($customFacilityId, 1);
+				  $cfInfoDao = $udrow::getFacilityInfo($customFacilityId, 1);
+				  $customFacilityName = $cfInfoDao->getName();
+				  $customFacilityState = $cfInfoDao->getState();
 				  if(true ===  isSurveyCategoryStarted($userId, $customFacilityId, 1, $surveyCategoryId)  && true ===  isSurveyCategoryComplete($userId, $customFacilityId, 1, $surveyCategoryId   )){
 					//echo 'complete: userid '.$userId.', fid: '.$facilityId.', custom facil, sur category: '.$surveyCategoryTitle.'<br/>';
-				  	 $o .= '<tr><td>'.$surveyCategoryTitle.'</td><td>'. $udrow->username.'</td><td>'.$customFacilityName.'</td><td>Yes (is Custom)</td><td>'.getTotalNumAnsweredActivitiesInSurveyCategoryForFacility($userId, $surveyCategoryId, $customFacilityId, 1).'</td><td>'.$sdActivityTotalCount.'</td></tr>';
+				  	 $o .= '<tr><td>'.$surveyCategoryTitle.'</td><td>'. $udrow->username.'</td><td>'.$customFacilityName.'</td><td>'.$customFacilityState.'</td><td>Yes (is Custom)</td><td>'.getTotalNumAnsweredActivitiesInSurveyCategoryForFacility($userId, $surveyCategoryId, $customFacilityId, 1).'</td><td>'.$sdActivityTotalCount.'</td></tr>';
 				  }
 				}
 			}
