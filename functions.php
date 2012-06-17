@@ -3,7 +3,22 @@ require_once('urm_secure/constants.php');
 
 // ---- also  has  dbfunctions at the bottom of this file. ----
 
- 
+$today = getdate();
+
+//==========IF ITS LATER THAN JUNE 22 2012, LOGIN IS NO LONGER POSSIBLE. ==========
+if($today['year'] >= constant('endingYear') && 
+   $today['mon'] >= constant('endingMonth')    && 
+   $today['mday'] > constant('endingDay')){
+   	
+	header('Location: login_disabled.php');
+	exit();
+
+}
+
+
+
+
+
 session_start();
 
 //connect db

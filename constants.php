@@ -1,5 +1,7 @@
 <?php 
 //set_include_path(get_include_path().":/usr/local/www/apache22/data/u rm/");  // this for the freebsd system only
+ 
+
 
 
 if(  (isset($_SESSION['username]']))    && $_SESSION['username'] == "dzetoad2@gmail.com"){
@@ -10,10 +12,17 @@ if(  (isset($_SESSION['username]']))    && $_SESSION['username'] == "dzetoad2@gm
 
 
 
+
 //define('DEBUG',1);  
   //define('debugActivityCategories',1);
   //define('debugSurveyCategories',1);  //this lets you try to answer activities owned by another user (in same facility).
 //define('appRootDirectory','.');
+
+define('endingYear','2012');
+define('endingMonth','6');
+define('endingDay','14'); //22 is normal
+
+
 
 
 class completionText {
