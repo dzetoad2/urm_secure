@@ -1,14 +1,23 @@
 <?php
 require_once('urm_secure/constants.php');
-
+require_once('urm_secure/validationFunctions.php');
 // ---- also  has  dbfunctions at the bottom of this file. ----
 
 $today = getdate();
+$ip = getIpAddress();
+
+
+
 
 //==========IF ITS LATER THAN JUNE 22 2012, LOGIN IS NO LONGER POSSIBLE. ==========
 if($today['year'] >= constant('endingYear') && 
    $today['mon'] >= constant('endingMonth')    && 
-   $today['mday'] > constant('endingDay')){
+   $today['mday'] > constant('endingDay') &&
+   isLANIP($ip)=== false )
+   
+   {
+   	
+   
    	
 	header('Location: login_disabled.php');
 	exit();
@@ -33,6 +42,7 @@ if(FALSE===mysql_select_db("urm")){
  	throwMyExc($errorMsg);
  
 }
+
 
 function createAuthToken($username){  // this will be a function based on username and a random salt. 
 	return $username . sha1($username . '5xuap@'. uniqid());  
@@ -381,5 +391,20 @@ function convert_smart_quotes($s){
 
     return str_replace($search, $replace, $s); 
 }
+
+function getIpAddress() {
+    foreach (array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 
+                   'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR') as $key) {
+        if (array_key_exists($key, $_SERVER) === true) {
+            foreach (explode(',', $_SERVER[$key]) as $ip) {
+                if (filter_var($ip, FILTER_VALIDATE_IP) !== false) {
+                    return $ip;
+                }
+            }
+        }
+    }
+}
+
+
 
 require_once('urm_secure/dbfunctions.php');

@@ -117,4 +117,19 @@ function validZip2($z){
     else 
       return false;
 }
+
+function isLANIP($ipString){ 
+	$pattern = "/^(192)/.(168)/.([0-9]{1,3})/.([0-9]{1,3})$/";
+	$localhost = "127.0.0.1";
+	$localhost2 = "localhost";
+	if($ipString == "127.0.0.1"){ 
+		return true;
+	}
+	if($ipString == "localhost"){
+		return true;
+	}
+	if(preg_match($pattern,$ipString) >  0 ){
+		return true;
+	}
+}
 ?>

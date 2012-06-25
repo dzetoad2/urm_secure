@@ -20,7 +20,7 @@ if(  (isset($_SESSION['username]']))    && $_SESSION['username'] == "dzetoad2@gm
 
 define('endingYear','2012');
 define('endingMonth','6');
-define('endingDay','14'); //22 is normal
+define('endingDay','22'); //22 is normal
 
 
 
