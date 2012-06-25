@@ -13,19 +13,11 @@ $ip = getIpAddress();
 if($today['year'] >= constant('endingYear') && 
    $today['mon'] >= constant('endingMonth')    && 
    $today['mday'] > constant('endingDay') &&
-   isLANIP($ip)=== false )
-   
-   {
-   	
-   
-   	
+   isLANIP($ip)=== false ){
+   // so date > expire date, AND the ip is an external ip.
 	header('Location: login_disabled.php');
 	exit();
-
 }
-
-
-
 
 
 session_start();
