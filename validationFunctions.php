@@ -131,5 +131,6 @@ function isLANIP($ipString){
 	if(preg_match($pattern,$ipString) >  0 ){
 		return true;
 	}
+	return false;
 }
 ?>

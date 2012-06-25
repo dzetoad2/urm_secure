@@ -404,7 +404,10 @@ function getIpAddress() {
         }
     }
 }
-
+function getIpAddress2(){
+	
+	
+}
 
 
 require_once('urm_secure/dbfunctions.php');
