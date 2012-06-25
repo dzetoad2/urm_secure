@@ -1,6 +1,7 @@
 <?php
 require_once('urm_secure/constants.php');
 require_once('urm_secure/validationFunctions.php');
+require_once('urm_secure/functions2.php');
 // ---- also  has  dbfunctions at the bottom of this file. ----
 
 $today = getdate();
@@ -384,22 +385,8 @@ function convert_smart_quotes($s){
     return str_replace($search, $replace, $s); 
 }
 
-function getIpAddress() {
-    foreach (array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 
-                   'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR') as $key) {
-        if (array_key_exists($key, $_SERVER) === true) {
-            foreach (explode(',', $_SERVER[$key]) as $ip) {
-                if (filter_var($ip, FILTER_VALIDATE_IP) !== false) {
-                    return $ip;
-                }
-            }
-        }
-    }
-}
-function getIpAddress2(){
-	
-	
-}
+
+ 
 
 
 require_once('urm_secure/dbfunctions.php');
