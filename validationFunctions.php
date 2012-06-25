@@ -119,7 +119,7 @@ function validZip2($z){
 }
 
 function isLANIP($ipString){ 
-	$pattern = "/^(192)/.(168)/.([0-9]{1,3})/.([0-9]{1,3})$/";
+	$pattern = "/^(192)\.(168)\.([0-9]{1,3})\.([0-9]{1,3})$/";
 	$localhost = "127.0.0.1";
 	$localhost2 = "localhost";
 	if($ipString == "127.0.0.1"){ 
