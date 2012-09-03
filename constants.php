@@ -1,14 +1,14 @@
 <?php 
 //set_include_path(get_include_path().":/usr/local/www/apache22/data/u rm/");  // this for the freebsd system only
  
-
+//define('loginOverride','1');
 
 
 if(  (isset($_SESSION['username]']))    && $_SESSION['username'] == "dzetoad2@gmail.com"){
   define('debugFillOutAction',1);    
 }
 
-//define('debugFillOutAction',1);
+define('debugFillOutAction',1);
 
 
 
@@ -21,7 +21,6 @@ if(  (isset($_SESSION['username]']))    && $_SESSION['username'] == "dzetoad2@gm
 define('endingYear','2012');
 define('endingMonth','6');
 define('endingDay','22'); //22 is normal
-
 
 
 

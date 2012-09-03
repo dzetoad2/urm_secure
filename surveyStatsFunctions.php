@@ -4,10 +4,15 @@ require_once('activitiesSupplementalFunctions.php');
  
 require_once('DAO/surveyCategoryStatsRowListDAO.php'); 
 use urm\urm_secure\DAO\surveyCategoryStatsRowListDAO;
+
 require_once('DAO/userStatsRowListDAO.php');
 use urm\urm_secure\DAO\userStatsRowListDAO;
+
 require_once('DAO/userStatsStartedButIncompleteDAO.php');
 use urm\urm_secure\DAO\userStatsStartedButIncompleteDAO;
+
+require_once('DAO/customActivityRowListDAO.php');
+use urm\urm_secure\DAO\customActivityRowListDAO;
 
 function getTotalNumAnsweredActivities($userId){
 
@@ -287,6 +292,41 @@ function getStats5RowsHtml(){
 	return $o;	
 	
 }
+
+
+function getStats6RowsHtml(){
+	
+	/* Get all the user created activities, and cross link them with info: 
+	 *    customActivity table       surveyanswer table
+	 *    
+	 *    use these:
+	 *       userid is the same.   customactivity.userid = surveyanswer.userid
+	 *       facilityid is the same.     customactivity.fid = surveyanswer.facilityid
+	 *       customactivity.id is 1            surveyanswer.isCustomActivity = 1
+	 *    survey category id -> cross reference to get name     
+	 *    customActivity.surveyCategoryId = surveyCategory.id  ,   and grab surveyCategory.title
+	 *    hospital name
+	 * 
+	 * -=--------
+	 */
+	$rows = new customActivityRowListDAO();
+	return $rows->toRowsHtml();
+	
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

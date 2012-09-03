@@ -24,7 +24,10 @@ if($today['year'] >= constant('endingYear') &&
 session_start();
 
 //connect db
-$conn = mysql_connect("localhost","myroot","f");
+
+require_once('urm_secure/functions_secure.php');  //this is just one line.
+
+
 if($conn===FALSE) 
 {
 	$errorMsg="Database connection failed. Check name/pw.";
