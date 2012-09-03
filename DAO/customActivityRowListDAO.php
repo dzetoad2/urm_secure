@@ -1,16 +1,23 @@
 <?php
 namespace urm\urm_secure\DAO;
 
+require_once 'urm_secure/validationFunctions.php';
+
  
 class customActivityRowListDAO {
 	
 	public 
 	 $list;      //field data
 
-	function __construct(){
+	function __construct($surveyCategoryId){
+		if(!isPosInt($surveyCategoryId)){
+			die('surv cat id  is not pos int.');
+		}
 		$this->list = array();
 		
-		$q1 = "select customActivity.surveyCategoryId, surveyCategory.title as surveyCategoryTitle,  customActivity.is_cf, customActivity.title as title, customActivity.description as description,
+		$q1 = "select customActivity.surveyCategoryId as ca_surveyCategoryId, surveyCategory.title as surveyCategoryTitle,   
+		surveyAnswer.isCustomActivity as sa_isCustomActivity, 
+		customActivity.is_cf, customActivity.title as title, customActivity.description as description,
         surveyAnswer.isPerformedAdult as isPerformedAdult, isPerformedPediatric, isPerformedNatal, 
         hasTimeStandardAdult, hasTimeStandardPediatric, hasTimeStandardNatal, 
         durationAdult, durationPediatric, durationNatal,
@@ -25,9 +32,17 @@ class customActivityRowListDAO {
         
         where
 
-        surveyAnswer.isCustomActivity = 1";
+        surveyAnswer.isCustomActivity = 1 
+                and 
+        customActivity.surveyCategoryId = ".$surveyCategoryId;
+        
+        
 														//           and customActivity.surveyCategoryId = 1";
+		
 		$r1 = mysql_queryCustom($q1);
+		if($r1===false){
+			die('query error: '.$q1 );
+		}
 		while($row = mysql_fetch_array($r1)){
 			$title = $row['title'];
 			$descr = $row['description'];

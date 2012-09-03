@@ -294,7 +294,7 @@ function getStats5RowsHtml(){
 }
 
 
-function getStats6RowsHtml(){
+function getStats6RowsHtml($userId, $surveyCategoryId){
 	
 	/* Get all the user created activities, and cross link them with info: 
 	 *    customActivity table       surveyanswer table
@@ -309,7 +309,7 @@ function getStats6RowsHtml(){
 	 * 
 	 * -=--------
 	 */
-	$rows = new customActivityRowListDAO();
+	$rows = new customActivityRowListDAO($surveyCategoryId);
 	return $rows->toRowsHtml();
 	
 	

@@ -320,6 +320,7 @@ function getSurveyCategoryOwner($userFacilityId, $is_cf, $surveyCategoryId){
 	return $comma_separated_username_list;	
 	
 }
+ 
 
 // return the mysql resultset.
 function getActivitiesInSurveyCategory($surveyCategoryId){
