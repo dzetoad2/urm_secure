@@ -9,6 +9,17 @@ class customActivityRowListDAO {
 	public 
 	 $list;      //field data
 
+	 /*  select * from customActivity inner join surveyAnswer
+      on customActivity.id = surveyAnswer.activityId
+      where 
+      surveyAnswer.isCustomActivity = 1
+      and
+      surveyAnswer.userId = customActivity.userId
+	  * 
+	  * 
+	  * 
+	  */
+	 
 	function __construct($surveyCategoryId){
 		if(!isPosInt($surveyCategoryId)){
 			die('surv cat id  is not pos int.');
@@ -23,18 +34,22 @@ class customActivityRowListDAO {
         durationAdult, durationPediatric, durationNatal,
         volumeAdult, volumePediatric, volumeNatal,
         methodologyAdult, methodologyPediatric, methodologyNatal 
+        
         from 
 		surveyCategory join customActivity
 		on surveyCategory.id = customActivity.surveyCategoryId
 		
         join surveyAnswer
-        on customActivity.fid = surveyAnswer.facilityId
+        on customActivity.id = surveyAnswer.activityId
         
         where
 
         surveyAnswer.isCustomActivity = 1 
                 and 
+        surveyAnswer.userId = customActivity.userId
+        and 
         customActivity.surveyCategoryId = ".$surveyCategoryId;
+		
         
         
 														//           and customActivity.surveyCategoryId = 1";
@@ -111,7 +126,7 @@ class customActivityRowDAO {
 	  $this->hasTimeStandardAdult =     $hasTimeStandardAdult;
 	  $this->hasTimeStandardPediatric = $hasTimeStandardPediatric;
 	  $this->hasTimeStandardNatal =     $hasTimeStandardNatal;
-	  $this->durationAdult = 	 $durationAdult;
+	  $this->durationAdult = $durationAdult;     //  $this->durationAdult!="na"?    :  $this->durationAdult = "";
 	  $this->durationPediatric = $durationPediatric;
 	  $this->durationNatal = 	 $durationNatal;
 	  $this->volumeAdult = 		$volumeAdult;
@@ -121,10 +136,11 @@ class customActivityRowDAO {
 	  $this->methodologyPediatric = $methodologyPediatric;
 	  $this->methodologyNatal = 	$methodologyNatal;
 	}
+	 
 	
 	function toRowHtml(){
 		$o = '<tr>';
-		$o .= '<td>'.$this->survCatTitle.'</td>';
+		$o .= '<td >'.$this->survCatTitle.'</td>';
 		$o .= '<td>'.$this->title.'</td>';
 		$o .= '<td>'.$this->descr.'</td>';
 		$o .= '<td>'.$this->isPerformedAdult.'</td>';
