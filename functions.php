@@ -28,7 +28,8 @@ session_start();
 require_once('urm_secure/functions_secure.php');  //this is just one line.
 
 
-if($conn===FALSE) 
+if(
+        $conn===FALSE) 
 {
 	$errorMsg="Database connection failed. Check name/pw.";
 	throwMyExc($errorMsg);
@@ -186,7 +187,16 @@ function loggedin(){
 	 //echo "current timestamp: (what time it is RIGHT NOW) ".$current_timestamp."<br/>";   
 //	   echo "expiry timestamp: (the expiry date in the database plus the interval) ".$expiry."<br/>";
     }
-    return $loggedin;
+    
+    if(constant('ADMIN_ONLY_LOCK') === 0){
+      if(isAdmin($userId)){
+    	return $loggedin;
+      }else{
+    	return false;
+      }
+    }else{
+    	return $loggedin;
+    }
 }
 
 function wipeOutAuthtoken($username){

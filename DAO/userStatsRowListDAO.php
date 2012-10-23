@@ -11,16 +11,16 @@ class userStatsRowListDAO{
 	public
 	  $list;
 	  
-	function __construct(){
+	function __construct($facilityType){
 		$this->list = array();
 		
-		$q1 = "select id, username from user where 1";
+		$q1 = "select id, username from user where 1 order by username";
 		$r1 = mysql_queryCustom($q1);
 		while($row = mysql_fetch_array($r1)){
 			$id = $row['id'];
 			$username = $row['username'];
 			//echo '----------'.$id.', '.$username;
-			$r = new userStatsRowDAO($id,$username);
+			$r = new userStatsRowDAO($id,$username,$facilityType);
 			//echo $r->toRowHtml();
 			//echo '<br/>';
 			$this->list[] = $r;
@@ -53,12 +53,20 @@ class userStatsRowDAO {
 	public 
 	 $id, $username, $facilityIdArr, $customFacilityIdArr;
 	 
-	function __construct($in_id, $in_username){
+	function __construct($in_id, $in_username,$facilityType){  //facilitytype can be normal , both, custom.  
 		$this->id = $in_id;
 		$this->username = $in_username;
+		$this->facilityType = $facilityType;
 		if($in_username != "dzetoad2@gmail.com"  && $in_username != "a@a.com"){
-		  $this->populateFacilityIdArr();
-		  $this->populateCustomFacilityIdArr();
+		  
+		  if($facilityType === "normal" || $facilityType === "both"){
+		    $this->populateFacilityIdArr();
+		  }elseif($facilityType === "custom" || $facilityType === "both"){
+		  	$this->populateCustomFacilityIdArr();
+		  }else{
+		  	$em="userstatsrowdao: facilitytype was invalid. must be normal, or custom. facilitytype was: ".$facilityType;
+		  	throwMyExc($em);
+		  }
 		}
 	}
 	function populateFacilityIdArr(){

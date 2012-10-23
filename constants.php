@@ -4,12 +4,15 @@
 //define('loginOverride','1');
 
 
+define('ADMIN_ONLY_LOCK',1);
+
+
 if(  (isset($_SESSION['username]']))    && $_SESSION['username'] == "dzetoad2@gmail.com"){
   define('debugFillOutAction',1);    
 }
 
 define('debugFillOutAction',1);
-
+define('debugFeatureTesting', 0);
 
 
 
